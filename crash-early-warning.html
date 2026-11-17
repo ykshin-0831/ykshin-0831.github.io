@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Much of Crash Early Warning Is Early? | Yeong Kyeong (YK) Shin</title>
+<meta name="description" content="An exact decomposition of ROC-AUC that separates warning before a crash from detection of a crash already under way.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yeong Kyeong (YK) Shin">
+<meta property="og:title" content="How Much of Crash Early Warning Is Early? | Yeong Kyeong (YK) Shin">
+<meta property="og:description" content="An exact decomposition of ROC-AUC that separates warning before a crash from detection of a crash already under way.">
+<meta property="og:url" content="https://ykshin-0831.github.io/crash-early-warning.html">
+<meta property="og:image" content="https://ykshin-0831.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.tlink{color:inherit}
+.tlink:hover{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:saturate(1.2) blur(6px)}
+.nav .in{max-width:860px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nav .brand{font-weight:600;color:var(--ink);white-space:nowrap}
+.nav .brand b{color:var(--accent)}
+.nav .links{display:flex;gap:18px;font-size:.95rem;flex-wrap:wrap;justify-content:flex-end}
+.nav .links a{color:var(--muted)}
+.nav .links a:hover{color:var(--accent);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:0 22px}
+.about{display:grid;grid-template-columns:1fr 190px;gap:34px;align-items:start;padding:46px 0 10px}
+.about.nophoto{grid-template-columns:1fr}
+h1{font-size:2.35rem;font-weight:300;margin:0 0 4px;letter-spacing:-.01em;line-height:1.15}
+h1 b{font-weight:700;color:var(--accent)}
+.affil{color:var(--muted);margin:0 0 20px;font-size:1rem}
+.about p{margin:0 0 14px;max-width:62ch}
+.photo img{width:100%;border-radius:8px;display:block;box-shadow:0 1px 3px rgba(16,38,70,.15)}
+.social{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0 6px}
+.social a{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-size:.95rem}
+.social a:hover{color:var(--accent);text-decoration:none}
+.social svg{width:20px;height:20px;color:var(--accent)}
+section{padding:30px 0 6px}
+h2{font-size:1.45rem;font-weight:600;color:var(--accent);margin:0 0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.news{width:100%;border-collapse:collapse}
+.news td{padding:7px 0;vertical-align:top;border-bottom:1px solid #f1f2f4}
+.news td:first-child{width:110px;font-weight:600;color:var(--muted);white-space:nowrap;font-size:.93rem;padding-right:14px}
+.pub{display:grid;grid-template-columns:200px 1fr;gap:22px;padding:20px 0;border-bottom:1px solid #f1f2f4}
+.pub:last-child{border-bottom:0}
+.pub .thumb{position:relative}
+.pub .thumb img{width:100%;border:1px solid var(--line);border-radius:6px;background:#fff;display:block}
+.badge{display:inline-block;font-size:.74rem;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;margin-bottom:8px}
+.badge.wip{background:#6b7480}
+.pub .title{font-weight:700;font-size:1.06rem;line-height:1.4;margin:0 0 4px}
+.pub .authors{margin:0 0 2px;font-size:.96rem}
+.pub .authors b{text-decoration:underline;text-underline-offset:3px}
+.pub .venue{margin:0 0 8px;color:var(--muted);font-size:.95rem}
+.pub .venue i{color:var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-top:8px}
+.btn{font-family:inherit;display:inline-block;font-size:.78rem;font-weight:600;letter-spacing:.02em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:2px 10px;line-height:1.6;background:#fff;cursor:pointer}
+.btn:hover{background:var(--accent);color:#fff;text-decoration:none}
+.btn[aria-expanded="true"]{background:var(--accent);color:#fff}
+.abs{margin:10px 0 2px;padding:12px 16px;border-left:3px solid var(--accent);background:#f7f9fc;font-size:.95rem;border-radius:0 6px 6px 0}
+.abs p{margin:0 0 10px}
+.abs p:last-child{margin-bottom:0}
+.abs figure{margin:10px 0 4px}
+.abs figure img{width:100%;border:1px solid var(--line);border-radius:6px}
+.abs figcaption{font-size:.84rem;color:var(--muted);margin-top:4px}
+.projects{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.card img{width:100%;display:block;border-bottom:1px solid var(--line)}
+.card .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.card h3{font-size:1.06rem;margin:0 0 2px;line-height:1.35}
+.card .meta{color:var(--muted);font-size:.9rem;margin:0 0 10px}
+.card p{margin:0 0 10px;font-size:.95rem}
+.card ul{margin:0 0 10px;padding-left:18px;font-size:.93rem}
+.card li{margin:0 0 4px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.tag{font-size:.76rem;background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 8px}
+.card .btns{margin-top:auto}
+.skills{display:grid;grid-template-columns:170px 1fr;gap:6px 18px;font-size:.96rem}
+.skills dt{font-weight:600;color:var(--muted)}
+.skills dd{margin:0}
+footer{max-width:860px;margin:30px auto 0;padding:22px 22px 40px;color:var(--muted);font-size:.86rem;border-top:1px solid var(--line)}
+@media (max-width:720px){
+ .about{grid-template-columns:1fr;gap:18px;padding-top:30px} .photo{max-width:160px;order:-1}
+ h1{font-size:1.9rem}
+ .pub{grid-template-columns:1fr;gap:12px} .pub .thumb{max-width:420px}
+ .projects{grid-template-columns:1fr}
+ .skills{grid-template-columns:1fr;gap:2px} .skills dd{margin-bottom:8px}
+ .nav .in{padding:10px 16px} .nav .brand{font-size:.95rem} .nav .links{gap:10px;font-size:.84rem;flex-wrap:nowrap}
+ .news td:first-child{width:76px;padding-right:10px}
+}
+@media (max-width:380px){.nav .in{padding:10px 12px;gap:8px} .nav .links{gap:8px;font-size:.8rem}}
+@media (max-width:340px){.nav .in{flex-wrap:wrap;row-gap:4px} .nav .links{flex-wrap:wrap;justify-content:flex-start}}
+
+.keyres{background:var(--accent-soft);border-radius:8px;padding:14px 18px 6px;margin:18px 0 0}
+.keyres .kh{font-weight:700;color:var(--accent);margin:0 0 6px}
+.keyres ul{margin:0 0 8px;padding-left:20px}
+.keyres li{margin:0 0 6px}
+.detail{max-width:780px;margin:0 auto;padding:36px 22px 10px}
+.crumb{font-size:.9rem;margin:0 0 18px}
+.detail h1{font-size:1.85rem;font-weight:700;line-height:1.25;color:var(--accent);letter-spacing:-.01em;margin:0 0 6px}
+.detail .sub{font-size:1.1rem;color:var(--ink);margin:0 0 10px}
+.detail .status{color:var(--muted);margin:0 0 14px}
+.detail h2{font-size:1.35rem;margin:42px 0 12px;scroll-margin-top:70px}
+.detail h3{font-size:1.06rem;margin:26px 0 8px;color:var(--ink)}
+.detail h4{font-size:.97rem;margin:18px 0 6px;color:var(--muted)}
+.detail p{margin:0 0 12px}
+.detail p.lead{font-size:1.04rem}
+.detail ul,.detail ol{margin:0 0 12px;padding-left:22px}
+.detail li{margin:0 0 7px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 18px;margin:18px 0 0;font-size:.92rem}
+.toc a{color:var(--muted)}
+.toc a:hover{color:var(--accent)}
+.facts{display:grid;grid-template-columns:120px 1fr;gap:8px 18px;margin:22px 0 6px;padding:16px 18px;background:#f7f9fc;border-radius:8px;font-size:.95rem}
+.facts dt{font-weight:600;color:var(--muted)}
+.facts dd{margin:0}
+.detail figure{margin:16px 0 18px}
+.detail figure img{width:100%;border:1px solid var(--line);border-radius:6px;display:block}
+.detail figcaption{font-size:.86rem;color:var(--muted);margin-top:6px}
+.rtable{width:100%;border-collapse:collapse;font-size:.93rem;margin:6px 0 14px}
+.rtable th,.rtable td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.rtable th{color:var(--muted);font-weight:600}
+.rtable td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+.rtable tr.grp td{font-weight:600;color:var(--accent);background:#f7f9fc}
+.rtable tr.base td{background:#f7f9fc}
+.note{font-size:.9rem;color:var(--muted)}
+.eq{overflow-x:auto;margin:10px 0 14px;padding:10px 4px;font-size:1.06rem}
+.eq math{display:block}
+math{font-size:1.04em}
+.codefig{margin:14px 0 18px}
+pre.code{background:#f6f8fa;border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto;font-size:.82rem;line-height:1.55;margin:0}
+pre.code code{font-family:"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;color:#1f2328}
+pre.code .k{color:#cf222e}
+pre.code .s{color:#0a3069}
+pre.code .c{color:#6e7781;font-style:italic}
+pre.code .n{color:#0550ae}
+pre.code .f{color:#8250df}
+.flow{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:8px;margin:12px 0 18px}
+.flow .node{border:1px solid #c9d3e3;border-radius:6px;padding:9px 10px;background:#fff;display:flex;flex-direction:column;gap:3px}
+.flow .node b{font-size:.86rem;color:var(--accent);display:flex;align-items:center;gap:6px}
+.flow .node span{font-size:.8rem;color:var(--muted);line-height:1.35}
+.flow .step{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700}
+.tw{overflow-x:auto}
+.timeline{display:flex;margin:12px 0 6px;border-radius:6px;overflow:hidden;font-size:.84rem;text-align:center}
+.timeline div{padding:9px 8px;color:#fff}
+.timeline .sel{background:#6b7480;flex:1155}
+.timeline .eval{background:var(--accent);flex:941}
+.tl-cap{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:14px}
+.rule{counter-reset:r;list-style:none;padding-left:0}
+.rule li{counter-increment:r;padding-left:28px;position:relative}
+.rule li::before{content:counter(r);position:absolute;left:0;top:.15em;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+@media (max-width:720px){.facts{grid-template-columns:1fr;gap:2px} .facts dd{margin-bottom:8px} .detail h1{font-size:1.5rem} .rtable{font-size:.86rem}
+ .flow{grid-template-columns:1fr 1fr} .eq{font-size:.92rem}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="in">
+  <a class="brand" href="index.html">YK <b>Shin</b></a>
+  <nav class="links" aria-label="Sections">
+    <a href="index.html#projects">projects</a><a href="index.html#papers">papers</a><a href="index.html#news">news</a><a href="index.html#background">background</a><a href="index.html#skills">tools</a>
+  </nav>
+</div></header>
+<main class="detail">
+<p class="crumb"><a href="index.html#papers">Papers</a></p>
+<h1>How Much of Crash Early Warning Is Early?</h1>
+<p class="sub">Separating Pre-Onset Warning from In-Progress Detection</p>
+<p class="status"><b>Yeong Kyeong Shin</b> (sole author). Under review at <i>Journal of Forecasting</i>, submitted November 2026.</p>
+<div class="btns">
+  <a class="btn" href="https://ssrn.com/abstract=7682931">Preprint</a>
+  <a class="btn" href="https://github.com/ykshin-0831/crash-ews-preonset">Code</a>
+  <a class="btn" href="https://doi.org/10.17605/OSF.IO/TB245">Prospective test (OSF)</a>
+  <a class="btn" href="https://doi.org/10.17605/OSF.IO/BKJUQ">Equity validation (OSF)</a>
+</div>
+<dl class="facts">
+  <dt>Origin</dt><dd>Grew out of my team project <a href="btc-early-warning.html">Bitcoin Drawdown Early Warning</a>, where a signal I proposed turned out to react mostly to crashes already under way. The project tests one system; this paper asks the general question for any crash warning model, with new models, data and evaluation.</dd>
+  <dt>Data</dt><dd>Binance one-minute Bitcoin spot data: 1,750,612 evaluation minutes in the development period (January 2023 to April 2026, 83 crashes) and a one-shot holdout (2018 to 2020, 199 crashes). Daily data for 10 equity indices, 2005 to 2025.</dd>
+  <dt>Models</dt><dd>Logistic regression, a volatility threshold, VPIN and gradient boosting on 17 features, all frozen before evaluation</dd>
+  <dt>Methods</dt><dd>Exact ROC-AUC decomposition, 7-day block bootstrap, Monte Carlo nulls, sensitivity bounds, preregistration (OSF)</dd>
+</dl>
+<nav class="toc" aria-label="On this page"><a href="#question">Research question</a><a href="#design">Design</a><a href="#findings">Findings</a><a href="#ongoing">Ongoing</a></nav>
+
+<h2 id="question">Research question</h2>
+<p class="lead">Crash warning models are usually scored on labels that count minutes inside an ongoing decline as positives, so a model can look skillful by detecting crashes that have already begun. How much of the reported skill is warning before a crash starts, and how much is detection of a crash already under way?</p>
+
+<h2 id="design">Design</h2>
+<h3>Labels</h3>
+<p>A crash is the first close 4% below the high of the previous 240 minutes, at breach time <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mi>e</mi></msub></mrow><annotation encoding="application/x-tex">b_e</annotation></semantics></math></span>, and its onset <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>o</mi><mi>e</mi></msub></mrow><annotation encoding="application/x-tex">o_e</annotation></semantics></math></span> is the first close 1% below that peak. The standard protocol labels minute <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span> positive when a breach follows within the judging window:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>y</mi><mi>t</mi></msub><mo>=</mo><mn mathvariant="double-struck">1</mn><mrow><mo fence="true">{</mo><mi mathvariant="normal">∃</mi><mtext> </mtext><mi>e</mi><mo>:</mo><mtext>  </mtext><mi>t</mi><mo>+</mo><mn>30</mn><mo>≤</mo><msub><mi>b</mi><mi>e</mi></msub><mo>≤</mo><mi>t</mi><mo>+</mo><mn>240</mn><mo fence="true">}</mo></mrow></mrow><annotation encoding="application/x-tex">y_t=\mathbb{1}\left\{\exists\, e:\; t+30\le b_e\le t+240\right\}</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mtext>in-progress</mtext><mi>t</mi></msub><mo>=</mo><mn mathvariant="double-struck">1</mn><mo stretchy="false">{</mo><msub><mi>y</mi><mi>t</mi></msub><mo>=</mo><mn>1</mn><mo separator="true">,</mo><mtext>  </mtext><mi>t</mi><mo>≥</mo><msub><mi>o</mi><mi>e</mi></msub><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\text{in-progress}_t=\mathbb{1}\{y_t=1,\; t\ge o_e\}</annotation></semantics></math></span></div>
+<p>The positives <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi></mrow><annotation encoding="application/x-tex">P</annotation></semantics></math></span> therefore split into pre-onset positives <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mtext>pre</mtext></msub></mrow><annotation encoding="application/x-tex">P_{\text{pre}}</annotation></semantics></math></span>, where a warning is still possible, and in-progress positives <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mtext>in</mtext></msub></mrow><annotation encoding="application/x-tex">P_{\text{in}}</annotation></semantics></math></span>, where the decline has already begun.</p>
+<figure><img src="assets/crash_schematic.png" alt="Schematic of one crash with the judging window split at the onset into pre-onset and in-progress positives."><figcaption>One crash: the judging window before the breach splits at the onset into pre-onset and in-progress positives.</figcaption></figure>
+<figure class="codefig"><pre class="code"><code><span class="k">def</span> <span class="f">labels_for</span>(dname):
+    events = CATS[dname]
+    breach = events.breach_utc.astype(<span class="s">&#x27;int64&#x27;</span>).to_numpy()
+    onset = events.onset_1pct_utc.astype(<span class="s">&#x27;int64&#x27;</span>).to_numpy()
+    nxt = np.searchsorted(breach, TIMES + LEAD_MIN * NS, <span class="s">&#x27;left&#x27;</span>)
+    ok = nxt &lt; len(breach)
+    y, in_decline = np.zeros(len(TIMES), np.int8), np.zeros(len(TIMES), bool)
+    y[ok] = breach[nxt[ok]] &lt;= TIMES[ok] + LEAD_MAX * NS
+    in_decline[ok] = TIMES[ok] &gt;= onset[nxt[ok]]
+    <span class="k">return</span> dict(L1_event=y), dict(event=in_decline &amp; (y == <span class="n">1</span>))</code></pre><figcaption>Labels and in-progress flags for every minute, vectorized with a binary search over breach times (notebook 18). <a href="https://github.com/ykshin-0831/crash-ews-preonset/blob/main/programming_sample/nb18_auc_decomposition_excerpt.py">Source</a></figcaption></figure>
+
+<h3>Exact AUC decomposition</h3>
+<p>ROC-AUC averages over all (positive, negative) pairs, so it splits exactly by positive type. With <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>=</mo><mi mathvariant="normal">∣</mi><msub><mi>P</mi><mtext>in</mtext></msub><mi mathvariant="normal">∣</mi><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mi mathvariant="normal">∣</mi><msub><mi>P</mi><mtext>pre</mtext></msub><mi mathvariant="normal">∣</mi><mo>+</mo><mi mathvariant="normal">∣</mi><msub><mi>P</mi><mtext>in</mtext></msub><mi mathvariant="normal">∣</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\pi=|P_{\text{in}}|/(|P_{\text{pre}}|+|P_{\text{in}}|)</annotation></semantics></math></span>:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>π</mi><mo stretchy="false">)</mo><mtext> </mtext><msub><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mtext>pre</mtext></msub><mo>+</mo><mi>π</mi><mtext> </mtext><msub><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mtext>in</mtext></msub></mrow><annotation encoding="application/x-tex">\mathrm{AUC}=(1-\pi)\,\mathrm{AUC}_{\text{pre}}+\pi\,\mathrm{AUC}_{\text{in}}</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mtext>pre</mtext></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mi mathvariant="normal">∣</mi><msub><mi>P</mi><mtext>pre</mtext></msub><mi mathvariant="normal">∣</mi><mtext> </mtext><mi mathvariant="normal">∣</mi><mi>N</mi><mi mathvariant="normal">∣</mi></mrow></mfrac><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><msub><mi>P</mi><mtext>pre</mtext></msub></mrow></munder><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><mi>N</mi></mrow></munder><mo fence="false" stretchy="true" minsize="1.8em" maxsize="1.8em">(</mo><mn mathvariant="double-struck">1</mn><mo stretchy="false">{</mo><msub><mi>s</mi><mi>i</mi></msub><mo>&gt;</mo><msub><mi>s</mi><mi>j</mi></msub><mo stretchy="false">}</mo><mo>+</mo><mstyle scriptlevel="0" displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mtext> </mtext><mn mathvariant="double-struck">1</mn><mo stretchy="false">{</mo><msub><mi>s</mi><mi>i</mi></msub><mo>=</mo><msub><mi>s</mi><mi>j</mi></msub><mo stretchy="false">}</mo><mo fence="false" stretchy="true" minsize="1.8em" maxsize="1.8em">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{AUC}_{\text{pre}}=\frac{1}{|P_{\text{pre}}|\,|N|}\sum_{i\in P_{\text{pre}}}\sum_{j\in N}\Big(\mathbb{1}\{s_i&gt;s_j\}+\tfrac12\,\mathbb{1}\{s_i=s_j\}\Big)</annotation></semantics></math></span></div>
+<p>The in-progress share of the skill above chance is then</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>ρ</mi><mtext>in</mtext></msub><mo>=</mo><mfrac><mrow><mi>π</mi><mtext> </mtext><mo stretchy="false">(</mo><msub><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mtext>in</mtext></msub><mo>−</mo><mn>0.5</mn><mo stretchy="false">)</mo></mrow><mrow><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mo>−</mo><mn>0.5</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">\rho_{\text{in}}=\frac{\pi\,(\mathrm{AUC}_{\text{in}}-0.5)}{\mathrm{AUC}-0.5}</annotation></semantics></math></span></div>
+<p>I also compute <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mtext>pre</mtext></msub></mrow><annotation encoding="application/x-tex">\mathrm{AUC}_{\text{pre}}</annotation></semantics></math></span> within volatility deciles, pairing only minutes in the same regime, and derive a bound on how many crashes any model can flag before onset.</p>
+
+<h3>Inference</h3>
+<h4>Block bootstrap without re-ranking</h4>
+<p>Re-ranking 1.75 million scores 500 times is slow, so I count correctly ordered pairs once for every pair of 7-day blocks <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>k</mi><mo separator="true">,</mo><mi>l</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(k,l)</annotation></semantics></math></span> into a matrix <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span>. A bootstrap draw only changes the block multiplicities <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span>:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msup><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mo lspace="0em" rspace="0em">∗</mo></msup><mo>=</mo><mfrac><mrow><msup><mi>w</mi><mi mathvariant="normal">⊤</mi></msup><mi>C</mi><mtext> </mtext><mi>w</mi></mrow><mrow><mo stretchy="false">(</mo><msup><mi>w</mi><mi mathvariant="normal">⊤</mi></msup><mi>p</mi><mo stretchy="false">)</mo><mtext> </mtext><mo stretchy="false">(</mo><msup><mi>w</mi><mi mathvariant="normal">⊤</mi></msup><mi>n</mi><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">\mathrm{AUC}^{*}=\frac{w^{\top}C\,w}{(w^{\top}p)\,(w^{\top}n)}</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>w</mi><mo>∼</mo><mtext>Multinomial</mtext><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">(</mo><mn>174</mn><mo separator="true">;</mo><mtext> </mtext><mstyle scriptlevel="0" displaystyle="false"><mfrac><mn>1</mn><mn>174</mn></mfrac></mstyle><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mstyle scriptlevel="0" displaystyle="false"><mfrac><mn>1</mn><mn>174</mn></mfrac></mstyle><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">)</mo></mrow><annotation encoding="application/x-tex">w\sim\text{Multinomial}\big(174;\,\tfrac{1}{174},\dots,\tfrac{1}{174}\big)</annotation></semantics></math></span></div>
+<figure class="codefig"><pre class="code"><code><span class="k">def</span> <span class="f">stats_from</span>(parts, w):
+    <span class="k">def</span> <span class="f">quad</span>(M):
+        <span class="k">return</span> w @ M @ w
+    w_neg, w_pre, w_in = w @ parts[<span class="s">&#x27;N&#x27;</span>], w @ parts[<span class="s">&#x27;P_pre&#x27;</span>], w @ parts[<span class="s">&#x27;P_in&#x27;</span>]
+    ord_pre, ord_in = quad(parts[<span class="s">&#x27;C_pre&#x27;</span>]), quad(parts[<span class="s">&#x27;C_in&#x27;</span>])
+    std = _ratio(ord_pre + ord_in, (w_pre + w_in) * w_neg)
+    pre, inn = _ratio(ord_pre, w_pre * w_neg), _ratio(ord_in, w_in * w_neg)
+    pi = _ratio(w_in, w_pre + w_in)
+    <span class="k">return</span> dict(auc_standard=std, auc_pre=pre, auc_in=inn, share_in=pi,
+                in_share_of_excess=(_ratio(pi * (inn - <span class="n">0.5</span>), std - <span class="n">0.5</span>)
+                                    <span class="k">if</span> np.isfinite(inn) <span class="k">else</span> <span class="n">0.0</span>))</code></pre><figcaption>Point estimate and bootstrap statistics from block-pair counts (notebook 18). <a href="https://github.com/ykshin-0831/crash-ews-preonset/blob/main/programming_sample/nb18_auc_decomposition_excerpt.py">Source</a></figcaption></figure>
+<h4>Chance baselines and sensitivity</h4>
+<ul>
+  <li>Development period: alerts placed at random within month &times; volatility-decile cells, which keeps the alert budget and the regime mix, with an exact conditional null for budget-constrained alerts.</li>
+  <li>Holdout: Monte Carlo null distributions of 10,000 randomly shifted alert sets.</li>
+  <li>A Rosenbaum-type timing bias <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi></mrow><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math></span> per alert can compound to <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">Γ</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">\Gamma^{n}</annotation></semantics></math></span> over <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span> spaced alerts, so a small per-alert timing bias can strongly inflate an apparent warning record.</li>
+</ul>
+
+<h3>Reproducibility</h3>
+<ul>
+  <li>54 Colab notebooks, frozen model files, specification files and stored result tables, with a SHA-256 manifest of every file.</li>
+  <li>One-shot evaluations write a lock file with the specification hash and refuse to run a second time.</li>
+  <li>Data-free check scripts reproduce the paper&rsquo;s values: 81 of 81 toy checks, 86 of 86 construction checks, 33 of 33 effect sizes and 32 of 32 table cells.</li>
+</ul>
+
+<h2 id="findings">Findings</h2>
+<div class="tw"><table class="rtable">
+  <tr><th>Main logistic model</th><th>Value</th></tr>
+  <tr class="grp"><td colspan="2">Development period, January 2023 to April 2026, 83 crashes</td></tr>
+  <tr><td><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><annotation encoding="application/x-tex">\mathrm{AUC}</annotation></semantics></math></span>, standard labeling</td><td class="n">0.76</td></tr>
+  <tr><td><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mtext>pre</mtext></msub></mrow><annotation encoding="application/x-tex">\mathrm{AUC}_{\text{pre}}</annotation></semantics></math></span></td><td class="n">0.67</td></tr>
+  <tr><td><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mtext>pre</mtext></msub></mrow><annotation encoding="application/x-tex">\mathrm{AUC}_{\text{pre}}</annotation></semantics></math></span> within volatility deciles</td><td class="n">0.59</td></tr>
+  <tr><td><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi></mrow><annotation encoding="application/x-tex">\pi</annotation></semantics></math></span>, positives already inside a decline</td><td class="n">41%</td></tr>
+  <tr><td><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mtext>in</mtext></msub></mrow><annotation encoding="application/x-tex">\rho_{\text{in}}</annotation></semantics></math></span>, share of skill above chance from those minutes</td><td class="n">61.5%</td></tr>
+  <tr><td>Crashes warned before onset by 800 alerts (chance 6.7)</td><td class="n">22 of 83</td></tr>
+  <tr class="grp"><td colspan="2">One-shot holdout, Bitcoin 2018 to 2020, 199 crashes, 713 alerts</td></tr>
+  <tr><td>Crashes warned before onset (chance 11.4)</td><td class="n">13 (p = 0.35)</td></tr>
+  <tr><td>Crashes caught after onset (chance 7.7)</td><td class="n">23 (p &lt; 0.001)</td></tr>
+  <tr class="grp"><td colspan="2">Ten equity indices, daily 2005 to 2025, 10% crashes, preregistered</td></tr>
+  <tr><td><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mtext>in</mtext></msub></mrow><annotation encoding="application/x-tex">\rho_{\text{in}}</annotation></semantics></math></span></td><td class="n">81% (95% interval 69&ndash;95%)</td></tr>
+</table></div>
+<p>Most measured skill is detection: only about 2 in 100 alerts are above-chance early warnings, and in seven published studies 17&ndash;88% of reconstructed &ldquo;pre-crash&rdquo; labels fall after onset.</p>
+<figure><img src="assets/crash_scores.jpg" alt="Median score percentile of four models around the onset of 83 Bitcoin crashes; scores jump after onset."><figcaption>Median score percentile of the four frozen models around the onset of the 83 development-period crashes.</figcaption></figure>
+
+<h2 id="ongoing">Ongoing</h2>
+<ul>
+  <li>Under review at the <i>Journal of Forecasting</i> (submitted November 2026); preprint on <a href="https://ssrn.com/abstract=7682931">SSRN</a>.</li>
+  <li>A one-year prospective test of the frozen warning systems, preregistered on <a href="https://doi.org/10.17605/OSF.IO/TB245">OSF</a>, runs from December 2026. The preregistration records the SHA-256 of its analysis notebook.</li>
+</ul>
+
+</main>
+<footer>&copy; 2026 Yeong Kyeong (YK) Shin. Last updated November 2026.</footer>
+</body>
+</html>

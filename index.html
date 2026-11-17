@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yeong Kyeong (YK) Shin</title>
+<meta name="description" content="Statistical modeling and machine learning for financial risk: does the reported skill of a risk model survive a fair test?">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yeong Kyeong (YK) Shin">
+<meta property="og:title" content="Yeong Kyeong (YK) Shin">
+<meta property="og:description" content="Statistical modeling and machine learning for financial risk: does the reported skill of a risk model survive a fair test?">
+<meta property="og:url" content="https://ykshin-0831.github.io/">
+<meta property="og:image" content="https://ykshin-0831.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://ykshin-0831.github.io/">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Yeong Kyeong Shin","alternateName":"YK Shin","url":"https://ykshin-0831.github.io/","affiliation":{"@type":"CollegeOrUniversity","name":"Kyung Hee University"},"sameAs":["https://orcid.org/0009-0008-9079-6642","https://github.com/ykshin-0831","https://www.linkedin.com/in/ys-shin-69711125b/","https://ssrn.com/abstract=7682931"]}
+</script>
+<style>
+:root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.tlink{color:inherit}
+.tlink:hover{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:saturate(1.2) blur(6px)}
+.nav .in{max-width:860px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nav .brand{font-weight:600;color:var(--ink);white-space:nowrap}
+.nav .brand b{color:var(--accent)}
+.nav .links{display:flex;gap:18px;font-size:.95rem;flex-wrap:wrap;justify-content:flex-end}
+.nav .links a{color:var(--muted)}
+.nav .links a:hover{color:var(--accent);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:0 22px}
+.about{display:grid;grid-template-columns:1fr 190px;gap:34px;align-items:start;padding:46px 0 10px}
+.about.nophoto{grid-template-columns:1fr}
+h1{font-size:2.35rem;font-weight:300;margin:0 0 4px;letter-spacing:-.01em;line-height:1.15}
+h1 b{font-weight:700;color:var(--accent)}
+.affil{color:var(--muted);margin:0 0 20px;font-size:1rem}
+.about p{margin:0 0 14px;max-width:62ch}
+.photo img{width:100%;border-radius:8px;display:block;box-shadow:0 1px 3px rgba(16,38,70,.15)}
+.social{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0 6px}
+.social a{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-size:.95rem}
+.social a:hover{color:var(--accent);text-decoration:none}
+.social svg{width:20px;height:20px;color:var(--accent)}
+section{padding:30px 0 6px}
+h2{font-size:1.45rem;font-weight:600;color:var(--accent);margin:0 0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.news{width:100%;border-collapse:collapse}
+.news td{padding:7px 0;vertical-align:top;border-bottom:1px solid #f1f2f4}
+.news td:first-child{width:110px;font-weight:600;color:var(--muted);white-space:nowrap;font-size:.93rem;padding-right:14px}
+.pub{display:grid;grid-template-columns:200px 1fr;gap:22px;padding:20px 0;border-bottom:1px solid #f1f2f4}
+.pub:last-child{border-bottom:0}
+.pub .thumb{position:relative}
+.pub .thumb img{width:100%;border:1px solid var(--line);border-radius:6px;background:#fff;display:block}
+.badge{display:inline-block;font-size:.74rem;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;margin-bottom:8px}
+.badge.wip{background:#6b7480}
+.pub .title{font-weight:700;font-size:1.06rem;line-height:1.4;margin:0 0 4px}
+.pub .authors{margin:0 0 2px;font-size:.96rem}
+.pub .authors b{text-decoration:underline;text-underline-offset:3px}
+.pub .venue{margin:0 0 8px;color:var(--muted);font-size:.95rem}
+.pub .venue i{color:var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-top:8px}
+.btn{font-family:inherit;display:inline-block;font-size:.78rem;font-weight:600;letter-spacing:.02em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:2px 10px;line-height:1.6;background:#fff;cursor:pointer}
+.btn:hover{background:var(--accent);color:#fff;text-decoration:none}
+.btn[aria-expanded="true"]{background:var(--accent);color:#fff}
+.abs{margin:10px 0 2px;padding:12px 16px;border-left:3px solid var(--accent);background:#f7f9fc;font-size:.95rem;border-radius:0 6px 6px 0}
+.abs p{margin:0 0 10px}
+.abs p:last-child{margin-bottom:0}
+.abs figure{margin:10px 0 4px}
+.abs figure img{width:100%;border:1px solid var(--line);border-radius:6px}
+.abs figcaption{font-size:.84rem;color:var(--muted);margin-top:4px}
+.projects{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.card img{width:100%;display:block;border-bottom:1px solid var(--line)}
+.card .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.card h3{font-size:1.06rem;margin:0 0 2px;line-height:1.35}
+.card .meta{color:var(--muted);font-size:.9rem;margin:0 0 10px}
+.card p{margin:0 0 10px;font-size:.95rem}
+.card ul{margin:0 0 10px;padding-left:18px;font-size:.93rem}
+.card li{margin:0 0 4px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.tag{font-size:.76rem;background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 8px}
+.card .btns{margin-top:auto}
+.skills{display:grid;grid-template-columns:170px 1fr;gap:6px 18px;font-size:.96rem}
+.skills dt{font-weight:600;color:var(--muted)}
+.skills dd{margin:0}
+footer{max-width:860px;margin:30px auto 0;padding:22px 22px 40px;color:var(--muted);font-size:.86rem;border-top:1px solid var(--line)}
+@media (max-width:720px){
+ .about{grid-template-columns:1fr;gap:18px;padding-top:30px} .photo{max-width:160px;order:-1}
+ h1{font-size:1.9rem}
+ .pub{grid-template-columns:1fr;gap:12px} .pub .thumb{max-width:420px}
+ .projects{grid-template-columns:1fr}
+ .skills{grid-template-columns:1fr;gap:2px} .skills dd{margin-bottom:8px}
+ .nav .in{padding:10px 16px} .nav .brand{font-size:.95rem} .nav .links{gap:10px;font-size:.84rem;flex-wrap:nowrap}
+ .news td:first-child{width:76px;padding-right:10px}
+}
+@media (max-width:380px){.nav .in{padding:10px 12px;gap:8px} .nav .links{gap:8px;font-size:.8rem}}
+@media (max-width:340px){.nav .in{flex-wrap:wrap;row-gap:4px} .nav .links{flex-wrap:wrap;justify-content:flex-start}}
+
+.about p{max-width:64ch}
+.about p.lead{font-size:1.13rem;line-height:1.55;color:var(--ink);margin-top:14px}
+section[id],div[id]{scroll-margin-top:64px}
+.badge.proj{background:#fff;color:var(--accent);border:1px solid var(--accent);padding:0 6px}
+.pub .role{margin:0 0 4px;font-size:.93rem;color:var(--muted)}
+.pub .role b{color:var(--ink);font-weight:600}
+.highlight{margin:12px 0 4px;padding:9px 14px;background:var(--accent-soft);border-radius:6px;font-size:.97rem;line-height:1.5;font-weight:600;color:var(--accent)}
+.pub .thumb a{display:block}
+.pub .thumb a:hover img{box-shadow:0 2px 8px rgba(16,38,70,.18)}
+.pub.nothumb{grid-template-columns:1fr;padding-left:222px}
+h3.small{font-size:1rem;font-weight:600;margin:22px 0 10px;color:var(--ink)}
+h3.small:first-of-type{margin-top:4px}
+.cvl{display:grid;grid-template-columns:110px 1fr;gap:8px 14px;font-size:.96rem;margin:0}
+.cvl dt{font-weight:600;color:var(--muted);font-size:.93rem;white-space:nowrap}
+.cvl dd{margin:0}
+.cvl .sub{color:var(--muted);font-size:.92rem}
+.cvl ul.sub{margin:4px 0 0;padding-left:18px}
+.cvl ul.sub li{margin:3px 0}
+@media (max-width:720px){.pub.nothumb{padding-left:0} .cvl{grid-template-columns:76px 1fr;gap:6px 10px}}
+details.more{margin:6px 0 0}
+details.more summary{cursor:pointer;color:var(--accent);font-size:.92rem;padding:6px 0}
+details.more summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.rq{display:grid;grid-template-columns:76px 1fr;gap:6px 14px;margin:12px 0 6px;font-size:.94rem;line-height:1.55}
+.rq dt{font-weight:600;color:var(--accent);font-size:.84rem;padding-top:.1em}
+.rq dd{margin:0}
+.pub .meta{margin:0 0 2px;color:var(--muted);font-size:.95rem}
+@media (max-width:520px){.rq{grid-template-columns:1fr;gap:0}.rq dt{margin-top:8px}.rq dd{margin:0}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="in">
+  <a class="brand" href="#top">YK <b>Shin</b></a>
+  <nav class="links" aria-label="Sections">
+    <a href="#projects">projects</a><a href="#papers">papers</a><a href="#news">news</a><a href="#background">background</a><a href="#skills">tools</a>
+  </nav>
+</div></header>
+
+<main id="top">
+<div class="about nophoto" id="about">
+  <div>
+    <h1>Yeong Kyeong (YK) <b>Shin</b></h1>
+    <p class="affil">Lab Researcher, Artificial Intelligence &amp; Business Model Laboratory, Kyung Hee University</p>
+    <p class="lead">I build and test models for financial risk, and I check whether their reported skill holds up out of sample, against simple baselines and, where possible, under preregistered protocols.</p>
+    <p>I led the six-member team that validated the risk engine of AI Guard, a portfolio risk prototype. My sole-authored paper on how much of crash early warning is actually early is under review, and I am first author of an NLP study of Korean risk disclosure. Before research I spent 18 months in financial valuation, on DCF impairment tests and on pricing RCPS, convertible bonds and stock options.</p>
+    <p>I received my B.A. from Kyung Hee University in 2026 and continue as a researcher in Prof. Kyoung Jun Lee&rsquo;s lab.</p>
+    <div class="social">
+      <a href="mailto:yk_shin@khu.ac.kr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 6l9 7 9-7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span>yk_shin@khu.ac.kr</span></a>
+      <a href="https://www.linkedin.com/in/ys-shin-69711125b/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10.5v6M8 7.6v.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M11.5 16.5v-6M11.5 13c0-1.7 1-2.6 2.4-2.6s2.3.9 2.3 2.6v3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>LinkedIn</span></a>
+      <a href="https://github.com/ykshin-0831"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.29-1.69-1.29-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg><span>GitHub</span></a>
+      <a href="https://ssrn.com/abstract=7682931"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18H5z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 8h8M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span>SSRN</span></a>
+      <a href="https://orcid.org/0009-0008-9079-6642"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="12" y="16" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" font-family="Arial,sans-serif">iD</text></svg><span>ORCID</span></a>
+      <a href="mailto:yk_shin@khu.ac.kr?subject=CV%20request"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15 2v5h5M9 13h7M9 17h7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span>CV available on request</span></a>
+    </div>
+  </div>
+</div>
+
+<section id="projects">
+  <h2>projects</h2>
+
+  <article class="pub">
+    <div class="thumb"><a href="ai-guard.html"><img src="assets/aiguard_breaches.png" alt="KOSPI 200 ETF 99% VaR breaches: about 26 expected, 70 for the Gaussian model, 29 for filtered historical simulation." loading="lazy"></a></div>
+    <div>
+      <span class="badge proj">Project</span>
+      <p class="title"><a class="tlink" href="ai-guard.html">AI Guard: validating a portfolio risk engine</a></p>
+
+      <p class="venue">AI &amp; Business Model Laboratory, September 2025 to present</p>
+      <p class="role"><b>My role:</b> team lead of six. I led the team building the prototype, designed and ran its statistical validation, and re-implemented the estimators and backtest.</p>
+      <p class="highlight">The engine&rsquo;s original Gaussian VaR was breached 70 times in 2,562 days against 26 expected. Filtered historical simulation (FHS) cut this to 29. In 2023&ndash;26 the Kupiec test rejected its 1% breach rate for none of 300 random portfolios drawn from the same 33 stocks, and on unseen 2010&ndash;15 data it breached on 1.16% of days.</p>
+      <dl class="rq"><dt>Product</dt><dd>The app tells users its loss figure will be exceeded on 1 day in 100. Under the original model that happened on 2.7 days in 100; after the switch to FHS, 1.1. The tests also led us to drop incremental revaluation, which showed no consistent speed gain for a typical six-asset portfolio.</dd></dl>
+      <div class="tags"><span class="tag">VaR backtesting</span><span class="tag">Kupiec, Christoffersen, DQ</span><span class="tag">Monte Carlo calibration</span><span class="tag">CAViaR</span><span class="tag">Ablation</span><span class="tag">Temporal split</span></div>
+      <div class="btns"><a class="btn" href="ai-guard.html">Details</a></div>
+    </div>
+  </article>
+  <article class="pub">
+    <div class="thumb"><a href="btc-early-warning.html"><img src="assets/btc_outofsample.png" alt="Out of 66 crash episodes, the spectral rule caught 17 and a volatility rule with the same number of alerts caught 14." loading="lazy"></a></div>
+    <div>
+      <span class="badge proj">Project</span>
+      <p class="title"><a class="tlink" href="btc-early-warning.html">Bitcoin drawdown early warning</a></p>
+
+      <p class="venue">FBA Quant project, December 2025 to present, team of three</p>
+      <p class="role"><b>My role:</b> I proposed the core signal, rebuilt the system as a tested package, and ran its out-of-sample validation and follow-up studies. Teammates built the original detector.</p>
+      <p class="highlight">Out of sample the frozen rule caught 17 of 66 crash episodes and a volatility rule with the same number of alerts caught 14 (McNemar p = 0.58), so the spectral rule performed about the same as the volatility baseline.</p>
+      <dl class="rq"><dt>Follow-up</dt><dd>Whether any warning comes before onset became the question of my sole-authored paper below.</dd></dl>
+      <div class="tags"><span class="tag">FFT features</span><span class="tag">XGBoost</span><span class="tag">Purged time split</span><span class="tag">Surrogate tests</span><span class="tag">HAR forecasting</span><span class="tag">pytest and CI</span></div>
+      <div class="btns"><a class="btn" href="btc-early-warning.html">Details</a> </div>
+    </div>
+  </article>
+</section>
+
+<section id="papers">
+  <h2>papers</h2>
+
+  <article class="pub">
+    <div class="thumb"><a href="crash-early-warning.html"><img src="assets/crash_schematic.png" alt="Schematic of one crash: pre-onset positives before the decline begins and in-progress positives after it." loading="lazy"></a></div>
+    <div>
+      <span class="badge wip">Under review</span>
+      <p class="title"><a class="tlink" href="crash-early-warning.html">How Much of Crash Early Warning Is Early? Separating Pre-Onset Warning from In-Progress Detection</a></p>
+      <p class="authors"><b>Yeong Kyeong Shin</b> (sole author)</p>
+      <p class="venue">Under review at <i>Journal of Forecasting</i>, 2026. Preprint on SSRN.</p>
+
+      <p class="highlight">61.5% of the main model&rsquo;s skill above chance comes from crashes already in progress, so most of what looks like early warning is detection.</p>
+      <dl class="rq"><dt>Origin</dt><dd>Grew out of my Bitcoin drawdown project (above), whose signal turned out to react mostly to crashes already under way.</dd></dl>
+      <div class="tags"><span class="tag">ROC-AUC decomposition</span><span class="tag">Block bootstrap</span><span class="tag">Monte Carlo nulls</span><span class="tag">Gradient boosting</span><span class="tag">Preregistration</span></div>
+      <div class="btns"><a class="btn" href="crash-early-warning.html">Details</a> <a class="btn" href="https://ssrn.com/abstract=7682931">Preprint</a> <a class="btn" href="https://github.com/ykshin-0831/crash-ews-preonset">Code</a> <a class="btn" href="https://doi.org/10.17605/OSF.IO/TB245">Prospective test (OSF)</a> <a class="btn" href="https://doi.org/10.17605/OSF.IO/BKJUQ">Equity validation (OSF)</a></div>
+    </div>
+  </article>
+  <article class="pub">
+    <div class="thumb"><a href="risk-disclosure-nlp.html"><img src="assets/risk_pipeline.png" alt="Pipeline: 32,314 annual reports, 1.08 million risk sentences, nine risk categories, split-sample tests." loading="lazy"></a></div>
+    <div>
+      <span class="badge wip">Under review</span>
+      <p class="title"><a class="tlink" href="risk-disclosure-nlp.html">Risk Disclosure Quality and Stock Liquidity: Evidence from Embedding-Based Textual Analysis of Korean Unstructured Corporate Filings</a></p>
+      <p class="authors"><b>Yeong Kyeong Shin</b>, Jangho Gil</p>
+      <p class="venue">Under external peer review at <i>Asia-Pacific Journal of Accounting &amp; Economics</i>, 2026</p>
+      <p class="role"><b>My role:</b> first author. I wrote the pipeline and ran the full-population analysis.</p>
+
+      <dl class="rq"><dt>Question</dt><dd>How broad, renewed and firm-specific is the risk disclosure of Korean listed firms, and is it reflected in liquidity, filing-day trading, future volatility and distress?</dd><dt>Follow-up</dt><dd>A paper on MD&amp;A narratives and corporate distress is in preparation (below).</dd></dl>
+      <div class="tags"><span class="tag">Sentence embeddings</span><span class="tag">n-gram Jaccard</span><span class="tag">Panel regression</span><span class="tag">Split-sample tests</span><span class="tag">FDR control</span></div>
+      <div class="btns"><a class="btn" href="risk-disclosure-nlp.html">Details</a> </div>
+    </div>
+  </article>
+  <article class="pub nothumb">
+
+    <div>
+      <span class="badge wip">In preparation</span>
+      <p class="title">MD&amp;A Narrative Composition and Corporate Distress: Boilerplate Displacement of Firm-Specific Risk Disclosure in Korean Listed Firms</p>
+      <p class="authors"><b>Yeong Kyeong Shin</b>, Jangho Gil</p>
+      <p class="venue">Manuscript in preparation; target submission June 2027</p>
+
+      <dl class="rq"><dt>Question</dt><dd>Does boilerplate displace firm-specific risk disclosure in MD&amp;A narratives, and how does narrative composition relate to corporate distress?</dd></dl>
+
+    </div>
+  </article>
+</section>
+
+<section id="news">
+  <h2>news</h2>
+  <table class="news">
+    <tr><td>Nov 2026</td><td>Re-implemented the AI Guard risk engine validation and tested a pre-specified explanation of why VaR breaches cluster on unseen 2010&ndash;15 data (<a href="https://github.com/ykshin-0831/ykshin-0831.github.io/blob/c238bb94639f42fc545499d5b7fa1cf99286fc2c/PROTOCOL_NEWDATA_v1.md">protocol</a>).</td></tr>
+    <tr><td>Nov 2026</td><td>Submitted &ldquo;How Much of Crash Early Warning Is Early?&rdquo; to the <i>Journal of Forecasting</i>. Preprint on <a href="https://ssrn.com/abstract=7682931">SSRN</a>.</td></tr>
+    <tr><td>Nov 2026</td><td>Preregistered a one-year prospective test of frozen crash warning systems, running from December 2026 (<a href="https://doi.org/10.17605/OSF.IO/TB245">OSF</a>).</td></tr>
+    <tr><td>Nov 2026</td><td>Ran the preregistered validation of the crash warning results on 10 equity indices (<a href="https://doi.org/10.17605/OSF.IO/BKJUQ">OSF</a>).</td></tr>
+    <tr><td>Aug 2026</td><td>Submitted our risk disclosure paper with Prof. Jangho Gil to the <i>Asia-Pacific Journal of Accounting &amp; Economics</i>.</td></tr>
+  </table>
+</section>
+
+<section id="background">
+  <h2>background</h2>
+  <h3 class="small">Education and honors</h3>
+  <dl class="cvl">
+    <dt>2026</dt><dd>B.A., Kyung Hee University</dd>
+    <dt>2026</dt><dd>Academic Excellence Award, College of International Studies, Kyung Hee University <span class="sub">(top 5% of 144 students)</span></dd>
+    <dt>2024</dt><dd>Passed Level I of the CFA Program</dd>
+  </dl>
+  <h3 class="small">Research experience</h3>
+  <dl class="cvl">
+    <dt>2025&ndash;now</dt><dd>Artificial Intelligence &amp; Business Model Laboratory, Kyung Hee University (Prof. Kyoung Jun Lee)<br><span class="sub">Joined in September 2025 as one of two undergraduates in a 15-member graduate lab; researcher since graduating in August 2026. Team lead of the AI Guard project.</span></dd>
+    <dt>2025&ndash;now</dt><dd>Research assistant to Prof. Jangho Gil<br><span class="sub">NLP measurement of Korean risk disclosure, from September 2025.</span></dd>
+    <dt>2025&ndash;now</dt><dd>FBA Quant, intercollegiate quantitative finance research group<br><span class="sub">Asset Pricing Division, from December 2025. Bitcoin drawdown early warning project.</span></dd>
+  </dl>
+  <h3 class="small">Industry experience</h3>
+  <dl class="cvl">
+    <dt>2022&ndash;24</dt><dd>Financial valuation, 18 months full-time at an accounting firm in Seoul
+      <ul class="sub">
+        <li>Valued redeemable convertible preferred shares (RCPS), convertible bonds and stock options for clients&rsquo; financial reporting. Simulated conversion and redemption payoffs by Monte Carlo, checked them against Tsiveriotis&ndash;Fernandes binomial lattices, and tested fair value against volatility and credit spreads.</li>
+        <li>Built DCF and comparable-company models for impairment tests of subsidiaries of a KOSPI-listed manufacturing group and of an online platform&rsquo;s overseas subsidiary. Estimated WACC from Bloomberg betas, cut 39 candidate peers to four comparables, and automated scenario reruns in Python (xlwings).</li>
+        <li>Wrote a Python (pandas) tool, later used across the team, that turned 45 filed valuation opinions from OpenDART into a checked 27-field dataset for an independent SPAC-merger valuation.</li>
+      </ul>
+    </dd>
+  </dl>
+</section>
+
+<section id="skills">
+  <h2>tools</h2>
+  <dl class="skills">
+    <dt>Programming</dt><dd>Python (pandas, NumPy, scikit-learn, matplotlib, xlwings, pytest), SQL (SQLite), R, Stata, MATLAB, Git and GitHub</dd>
+    <dt>Statistics</dt><dd>Panel fixed-effects and first-difference models, HAR volatility forecasting, QLIKE and Clark&ndash;West tests, surrogate, permutation and bootstrap tests, preregistration (OSF), Benjamini&ndash;Hochberg FDR control</dd>
+    <dt>Machine learning and NLP</dt><dd>Gradient-boosted trees (XGBoost), logistic regression, sentence embeddings (KoSimCSE, BGE-M3, OpenAI text-embedding-3-small), Korean text processing (KSS, OKT)</dd>
+    <dt>Quantitative finance</dt><dd>Factor models (CAPM, PCA-based APT, Fama&ndash;French three-factor replication for Korean stocks), derivatives pricing and Greeks, Monte Carlo and stochastic process simulation, VaR and CVaR backtesting (Kupiec, Christoffersen, DQ with Monte Carlo calibration), CAViaR quantile models, mean-variance portfolio optimization</dd>
+    <dt>Data</dt><dd>OpenDART, Korea Exchange daily data, Binance minute data, Bloomberg</dd>
+  </dl>
+</section>
+</main>
+
+<footer>&copy; 2026 Yeong Kyeong (YK) Shin. Last updated November 2026.</footer>
+</body>
+</html>

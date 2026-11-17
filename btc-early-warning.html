@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bitcoin Drawdown Early Warning | Yeong Kyeong (YK) Shin</title>
+<meta name="description" content="A spectral two-stage Bitcoin crash warning system, rebuilt and tested out of sample against equal-budget volatility baselines.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yeong Kyeong (YK) Shin">
+<meta property="og:title" content="Bitcoin Drawdown Early Warning | Yeong Kyeong (YK) Shin">
+<meta property="og:description" content="A spectral two-stage Bitcoin crash warning system, rebuilt and tested out of sample against equal-budget volatility baselines.">
+<meta property="og:url" content="https://ykshin-0831.github.io/btc-early-warning.html">
+<meta property="og:image" content="https://ykshin-0831.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.tlink{color:inherit}
+.tlink:hover{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:saturate(1.2) blur(6px)}
+.nav .in{max-width:860px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nav .brand{font-weight:600;color:var(--ink);white-space:nowrap}
+.nav .brand b{color:var(--accent)}
+.nav .links{display:flex;gap:18px;font-size:.95rem;flex-wrap:wrap;justify-content:flex-end}
+.nav .links a{color:var(--muted)}
+.nav .links a:hover{color:var(--accent);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:0 22px}
+.about{display:grid;grid-template-columns:1fr 190px;gap:34px;align-items:start;padding:46px 0 10px}
+.about.nophoto{grid-template-columns:1fr}
+h1{font-size:2.35rem;font-weight:300;margin:0 0 4px;letter-spacing:-.01em;line-height:1.15}
+h1 b{font-weight:700;color:var(--accent)}
+.affil{color:var(--muted);margin:0 0 20px;font-size:1rem}
+.about p{margin:0 0 14px;max-width:62ch}
+.photo img{width:100%;border-radius:8px;display:block;box-shadow:0 1px 3px rgba(16,38,70,.15)}
+.social{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0 6px}
+.social a{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-size:.95rem}
+.social a:hover{color:var(--accent);text-decoration:none}
+.social svg{width:20px;height:20px;color:var(--accent)}
+section{padding:30px 0 6px}
+h2{font-size:1.45rem;font-weight:600;color:var(--accent);margin:0 0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.news{width:100%;border-collapse:collapse}
+.news td{padding:7px 0;vertical-align:top;border-bottom:1px solid #f1f2f4}
+.news td:first-child{width:110px;font-weight:600;color:var(--muted);white-space:nowrap;font-size:.93rem;padding-right:14px}
+.pub{display:grid;grid-template-columns:200px 1fr;gap:22px;padding:20px 0;border-bottom:1px solid #f1f2f4}
+.pub:last-child{border-bottom:0}
+.pub .thumb{position:relative}
+.pub .thumb img{width:100%;border:1px solid var(--line);border-radius:6px;background:#fff;display:block}
+.badge{display:inline-block;font-size:.74rem;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;margin-bottom:8px}
+.badge.wip{background:#6b7480}
+.pub .title{font-weight:700;font-size:1.06rem;line-height:1.4;margin:0 0 4px}
+.pub .authors{margin:0 0 2px;font-size:.96rem}
+.pub .authors b{text-decoration:underline;text-underline-offset:3px}
+.pub .venue{margin:0 0 8px;color:var(--muted);font-size:.95rem}
+.pub .venue i{color:var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-top:8px}
+.btn{font-family:inherit;display:inline-block;font-size:.78rem;font-weight:600;letter-spacing:.02em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:2px 10px;line-height:1.6;background:#fff;cursor:pointer}
+.btn:hover{background:var(--accent);color:#fff;text-decoration:none}
+.btn[aria-expanded="true"]{background:var(--accent);color:#fff}
+.abs{margin:10px 0 2px;padding:12px 16px;border-left:3px solid var(--accent);background:#f7f9fc;font-size:.95rem;border-radius:0 6px 6px 0}
+.abs p{margin:0 0 10px}
+.abs p:last-child{margin-bottom:0}
+.abs figure{margin:10px 0 4px}
+.abs figure img{width:100%;border:1px solid var(--line);border-radius:6px}
+.abs figcaption{font-size:.84rem;color:var(--muted);margin-top:4px}
+.projects{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.card img{width:100%;display:block;border-bottom:1px solid var(--line)}
+.card .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.card h3{font-size:1.06rem;margin:0 0 2px;line-height:1.35}
+.card .meta{color:var(--muted);font-size:.9rem;margin:0 0 10px}
+.card p{margin:0 0 10px;font-size:.95rem}
+.card ul{margin:0 0 10px;padding-left:18px;font-size:.93rem}
+.card li{margin:0 0 4px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.tag{font-size:.76rem;background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 8px}
+.card .btns{margin-top:auto}
+.skills{display:grid;grid-template-columns:170px 1fr;gap:6px 18px;font-size:.96rem}
+.skills dt{font-weight:600;color:var(--muted)}
+.skills dd{margin:0}
+footer{max-width:860px;margin:30px auto 0;padding:22px 22px 40px;color:var(--muted);font-size:.86rem;border-top:1px solid var(--line)}
+@media (max-width:720px){
+ .about{grid-template-columns:1fr;gap:18px;padding-top:30px} .photo{max-width:160px;order:-1}
+ h1{font-size:1.9rem}
+ .pub{grid-template-columns:1fr;gap:12px} .pub .thumb{max-width:420px}
+ .projects{grid-template-columns:1fr}
+ .skills{grid-template-columns:1fr;gap:2px} .skills dd{margin-bottom:8px}
+ .nav .in{padding:10px 16px} .nav .brand{font-size:.95rem} .nav .links{gap:10px;font-size:.84rem;flex-wrap:nowrap}
+ .news td:first-child{width:76px;padding-right:10px}
+}
+@media (max-width:380px){.nav .in{padding:10px 12px;gap:8px} .nav .links{gap:8px;font-size:.8rem}}
+@media (max-width:340px){.nav .in{flex-wrap:wrap;row-gap:4px} .nav .links{flex-wrap:wrap;justify-content:flex-start}}
+
+.keyres{background:var(--accent-soft);border-radius:8px;padding:14px 18px 6px;margin:18px 0 0}
+.keyres .kh{font-weight:700;color:var(--accent);margin:0 0 6px}
+.keyres ul{margin:0 0 8px;padding-left:20px}
+.keyres li{margin:0 0 6px}
+.detail{max-width:780px;margin:0 auto;padding:36px 22px 10px}
+.crumb{font-size:.9rem;margin:0 0 18px}
+.detail h1{font-size:1.85rem;font-weight:700;line-height:1.25;color:var(--accent);letter-spacing:-.01em;margin:0 0 6px}
+.detail .sub{font-size:1.1rem;color:var(--ink);margin:0 0 10px}
+.detail .status{color:var(--muted);margin:0 0 14px}
+.detail h2{font-size:1.35rem;margin:42px 0 12px;scroll-margin-top:70px}
+.detail h3{font-size:1.06rem;margin:26px 0 8px;color:var(--ink)}
+.detail h4{font-size:.97rem;margin:18px 0 6px;color:var(--muted)}
+.detail p{margin:0 0 12px}
+.detail p.lead{font-size:1.04rem}
+.detail ul,.detail ol{margin:0 0 12px;padding-left:22px}
+.detail li{margin:0 0 7px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 18px;margin:18px 0 0;font-size:.92rem}
+.toc a{color:var(--muted)}
+.toc a:hover{color:var(--accent)}
+.facts{display:grid;grid-template-columns:120px 1fr;gap:8px 18px;margin:22px 0 6px;padding:16px 18px;background:#f7f9fc;border-radius:8px;font-size:.95rem}
+.facts dt{font-weight:600;color:var(--muted)}
+.facts dd{margin:0}
+.detail figure{margin:16px 0 18px}
+.detail figure img{width:100%;border:1px solid var(--line);border-radius:6px;display:block}
+.detail figcaption{font-size:.86rem;color:var(--muted);margin-top:6px}
+.rtable{width:100%;border-collapse:collapse;font-size:.93rem;margin:6px 0 14px}
+.rtable th,.rtable td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.rtable th{color:var(--muted);font-weight:600}
+.rtable td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+.rtable tr.grp td{font-weight:600;color:var(--accent);background:#f7f9fc}
+.rtable tr.base td{background:#f7f9fc}
+.note{font-size:.9rem;color:var(--muted)}
+.eq{overflow-x:auto;margin:10px 0 14px;padding:10px 4px;font-size:1.06rem}
+.eq math{display:block}
+math{font-size:1.04em}
+.codefig{margin:14px 0 18px}
+pre.code{background:#f6f8fa;border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto;font-size:.82rem;line-height:1.55;margin:0}
+pre.code code{font-family:"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;color:#1f2328}
+pre.code .k{color:#cf222e}
+pre.code .s{color:#0a3069}
+pre.code .c{color:#6e7781;font-style:italic}
+pre.code .n{color:#0550ae}
+pre.code .f{color:#8250df}
+.flow{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:8px;margin:12px 0 18px}
+.flow .node{border:1px solid #c9d3e3;border-radius:6px;padding:9px 10px;background:#fff;display:flex;flex-direction:column;gap:3px}
+.flow .node b{font-size:.86rem;color:var(--accent);display:flex;align-items:center;gap:6px}
+.flow .node span{font-size:.8rem;color:var(--muted);line-height:1.35}
+.flow .step{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700}
+.tw{overflow-x:auto}
+.timeline{display:flex;margin:12px 0 6px;border-radius:6px;overflow:hidden;font-size:.84rem;text-align:center}
+.timeline div{padding:9px 8px;color:#fff}
+.timeline .sel{background:#6b7480;flex:1155}
+.timeline .eval{background:var(--accent);flex:941}
+.tl-cap{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:14px}
+.rule{counter-reset:r;list-style:none;padding-left:0}
+.rule li{counter-increment:r;padding-left:28px;position:relative}
+.rule li::before{content:counter(r);position:absolute;left:0;top:.15em;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+@media (max-width:720px){.facts{grid-template-columns:1fr;gap:2px} .facts dd{margin-bottom:8px} .detail h1{font-size:1.5rem} .rtable{font-size:.86rem}
+ .flow{grid-template-columns:1fr 1fr} .eq{font-size:.92rem}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="in">
+  <a class="brand" href="index.html">YK <b>Shin</b></a>
+  <nav class="links" aria-label="Sections">
+    <a href="index.html#projects">projects</a><a href="index.html#papers">papers</a><a href="index.html#news">news</a><a href="index.html#background">background</a><a href="index.html#skills">tools</a>
+  </nav>
+</div></header>
+<main class="detail">
+<p class="crumb"><a href="index.html#projects">Projects</a></p>
+<h1>Bitcoin Drawdown Early Warning</h1>
+<p class="sub">A spectral two-stage warning system, rebuilt and tested out of sample</p>
+<p class="status">FBA Quant project (intercollegiate quantitative finance research group), three-member team, December 2025 to present</p>
+
+<dl class="facts">
+  <dt>Follow-up</dt><dd>Led to my sole-authored paper <a href="crash-early-warning.html">How Much of Crash Early Warning Is Early?</a>, which asks the general question with new models, data and evaluation.</dd>
+  <dt>My role</dt><dd>I proposed the core signal. I wrote the refactored package, the corrected evaluation, the significance and surrogate checks, the forecast and follow-up studies, and the tests. Teammates built the original detector and the cross-coin analysis.</dd>
+  <dt>Data</dt><dd>One-minute Binance klines for BTC, ETH, DOGE, AVAX and SOL, September 2020 to December 2024 (about 2.25 million rows per coin). BTC 2018 to 2020 and 2025 to 2026 held back for follow-up tests whose designs were written into the README before they were run.</dd>
+  <dt>Methods</dt><dd>Batched FFT features, XGBoost with a purged time split, equal-budget baselines, McNemar and circular-shift tests, IAAFT surrogates, HAR-X forecasts (QLIKE, Clark&ndash;West)</dd>
+</dl>
+<nav class="toc" aria-label="On this page"><a href="#question">Research question</a><a href="#design">Design</a><a href="#findings">Findings</a><a href="#ongoing">Ongoing</a></nav>
+
+<h2 id="question">Research question</h2>
+<p class="lead">Can a Fourier-based measure of short-horizon price instability warn of sustained 4% Bitcoin drawdowns better than volatility alone, when the system is frozen and tested out of sample against baselines that raise the same number of alerts?</p>
+
+<h2 id="design">Design</h2>
+<h3>Architecture</h3>
+<div class="flow" style="--cols:5"><div class="node"><b><span class="step">1</span>Data</b><span>1-min klines, 5 coins, complete minute grid</span></div><div class="node"><b><span class="step">2</span>Features</b><span>spectral hS, 30-day z-score, cohesion, regime, order flow</span></div><div class="node"><b><span class="step">3</span>Rule stage</b><span>alarm on regime, z and taker-sell share, 4-hour cooldown</span></div><div class="node"><b><span class="step">4</span>Learner stage</b><span>XGBoost triage of alarms</span></div><div class="node"><b><span class="step">5</span>Scoring</b><span>episode-level 1:1 matching</span></div></div>
+
+<h3>Spectral feature</h3>
+<p>For each minute, the closes of the trailing <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>=</mo><mn>32</mn></mrow><annotation encoding="application/x-tex">M=32</annotation></semantics></math></span> minutes are demeaned and transformed with a real FFT, and the signal is the mean magnitude of the <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">K=8</annotation></semantics></math></span> highest-frequency bins:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>h</mi><mi>t</mi></msub><mo>=</mo><mfrac><mn>1</mn><mi>K</mi></mfrac><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mi>J</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn></mrow><mi>J</mi></munderover><mo fence="false" stretchy="true" minsize="1.8em" maxsize="1.8em">∣</mo><msub><mi mathvariant="script">F</mi><mi>j</mi></msub><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>c</mi><mrow><mi>t</mi><mo>−</mo><mi>M</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi></mrow></msub><mo>−</mo><mover accent="true"><mi>c</mi><mo>ˉ</mo></mover><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">)</mo><mo fence="false" stretchy="true" minsize="1.8em" maxsize="1.8em">∣</mo></mrow><annotation encoding="application/x-tex">h_t=\frac{1}{K}\sum_{j=J-K+1}^{J}\Big|\mathcal{F}_j\big(c_{t-M+1:t}-\bar c\big)\Big|</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>z</mi><mi>t</mi></msub><mo>=</mo><mfrac><mrow><mi>ln</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><msub><mi>h</mi><mi>t</mi></msub><mo stretchy="false">)</mo><mo>−</mo><msub><mi>μ</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><msub><mi>σ</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mfrac></mrow><annotation encoding="application/x-tex">z_t=\frac{\ln(1+h_t)-\mu_{t-1}}{\sigma_{t-1}}</annotation></semantics></math></span></div>
+<p><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\mu_{t-1}</annotation></semantics></math></span> and <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\sigma_{t-1}</annotation></semantics></math></span> come from a trailing 30-day window that ends at <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t-1</annotation></semantics></math></span>. A strided view lets one batched FFT cover all 2.25 million windows without copying the data.</p>
+<figure class="codefig"><pre class="code"><code><span class="k">def</span> <span class="f">compute_hS</span>(prices, M, K):
+    p = prices.to_numpy(dtype=np.float32)
+    n = len(p)
+    <span class="k">if</span> n &lt; M:
+        <span class="k">return</span> pd.Series(index=prices.index, dtype=float, name=<span class="s">&quot;hS&quot;</span>)
+    windows = np.lib.stride_tricks.sliding_window_view(p, M)
+    detrended = windows - windows.mean(axis=<span class="n">1</span>, keepdims=<span class="k">True</span>)
+    mag = np.abs(np.fft.rfft(detrended, axis=<span class="n">1</span>))
+    hs = mag[:, -K:].mean(axis=<span class="n">1</span>)
+    <span class="k">return</span> pd.Series(hs, index=prices.index[M - <span class="n">1</span>:], name=<span class="s">&quot;hS&quot;</span>)</code></pre><figcaption>Batched spectral feature over all windows (btc_early_warning/features.py).</figcaption></figure>
+
+<h3>Two stages</h3>
+<p>The rule stage raises an alarm and then sleeps for 240 minutes:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>a</mi><mi>t</mi></msub><mo>=</mo><mn mathvariant="double-struck">1</mn><mo stretchy="false">{</mo><msub><mtext>low-vol regime</mtext><mi>t</mi></msub><mo stretchy="false">}</mo><mo>⋅</mo><mn mathvariant="double-struck">1</mn><mo stretchy="false">{</mo><msub><mi>z</mi><mi>t</mi></msub><mo>&gt;</mo><mn>1</mn><mo stretchy="false">}</mo><mo>⋅</mo><mn mathvariant="double-struck">1</mn><mo stretchy="false">{</mo><msub><mtext>TSR</mtext><mi>t</mi></msub><mo>&gt;</mo><mn>0.6</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">a_t=\mathbb{1}\{\text{low-vol regime}_t\}\cdot\mathbb{1}\{z_t&gt;1\}\cdot\mathbb{1}\{\text{TSR}_t&gt;0.6\}</annotation></semantics></math></span></div>
+<p>where TSR is the taker-sell share of volume. The learner stage re-ranks alarms with XGBoost (200 trees, depth 3, learning rate 0.03, subsample and column sample 0.8, positive weight set to the class ratio) on spectral, regime, order-flow and cross-coin cohesion features, the rolling cosine between changes in BTC&rsquo;s and each peer&rsquo;s standardized signal. Training uses 2021&ndash;22 and testing 2023&ndash;24; training alarms whose label window crosses the boundary are purged, and the top-k cutoff is fixed on training probabilities.</p>
+
+<h3>Evaluation</h3>
+<p>The target is a close at least 4% below the current price, sustained for 5 minutes, within 240 minutes, in a low-volatility regime. Positive minutes are merged into episodes, and each episode can be captured by at most one alarm, and only by an alarm whose own minute is positive. An equal-budget table compares, at the same number of alarms, a one-feature ranking, regularized logistic regression, XGBoost, and XGBoost without the spectral or cohesion features.</p>
+<p>After an external review I corrected four evaluation errors, each with a regression test: alarms credited in the gap between merged episodes, episodes from before the test period counted in the denominator, labels computed on truncated horizons, and minute gaps treated as consecutive data. The package runs 46 automated tests in CI.</p>
+
+<h3>Statistical tests</h3>
+<ul>
+  <li><b>Detection:</b> McNemar test on the episodes caught by the frozen rule and by a volatility rule with the same alert count.</li>
+  <li><b>Signal versus volatility:</b> IAAFT surrogates with a volatility-standardized null, comparing the largest bursts in one-day blocks with surrogates that keep volatility at scales from one to twelve hours.</li>
+  <li><b>Forecasting:</b> a pre-specified HAR-X comparison on untouched 2025&ndash;26 data, scored by QLIKE and the Clark&ndash;West test:</li>
+</ul>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mi>d</mi></msub><msub><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><mi>t</mi></msub><mo>+</mo><msub><mi>β</mi><mi>w</mi></msub><msubsup><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><mi>t</mi><mrow><mo stretchy="false">(</mo><mi>w</mi><mo stretchy="false">)</mo></mrow></msubsup><mo>+</mo><msub><mi>β</mi><mi>m</mi></msub><msubsup><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><mi>t</mi><mrow><mo stretchy="false">(</mo><mi>m</mi><mo stretchy="false">)</mo></mrow></msubsup><mo>+</mo><mi>γ</mi><mtext> </mtext><msub><mi>x</mi><mi>t</mi></msub><mo>+</mo><msub><mi>ε</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\mathrm{RV}_{t+1}=\beta_0+\beta_d\mathrm{RV}_t+\beta_w\mathrm{RV}^{(w)}_t+\beta_m\mathrm{RV}^{(m)}_t+\gamma\,x_t+\varepsilon_{t+1}</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mi mathvariant="normal">Q</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">I</mi><mi mathvariant="normal">K</mi><mi mathvariant="normal">E</mi></mrow><mo>=</mo><mfrac><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><msup><mover accent="true"><mi>σ</mi><mo>^</mo></mover><mn>2</mn></msup></mfrac><mo>−</mo><mi>ln</mi><mo>⁡</mo><mfrac><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><msup><mover accent="true"><mi>σ</mi><mo>^</mo></mover><mn>2</mn></msup></mfrac><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\mathrm{QLIKE}=\frac{\mathrm{RV}}{\hat\sigma^{2}}-\ln\frac{\mathrm{RV}}{\hat\sigma^{2}}-1</annotation></semantics></math></span></div>
+
+<h2 id="findings">Findings</h2>
+<h3>Detection on the original test years</h3>
+<div class="tw"><table class="rtable">
+  <tr><th>2023&ndash;24, corrected evaluation</th><th>Alarms</th><th>Crash episodes</th><th>Caught</th></tr>
+  <tr class="base"><td>Rule stage</td><td class="n">592</td><td class="n">3</td><td class="n">2</td></tr>
+  <tr><td>XGBoost, top 10 / 20 / 30% of alarms</td><td class="n">24 / 50 / 73</td><td class="n">3</td><td class="n">0 / 0 / 0</td></tr>
+  <tr><td>Spectral z-score alone, same budgets</td><td class="n">24 / 50 / 73</td><td class="n">3</td><td class="n">0 / 1 / 1</td></tr>
+</table></div>
+<ul>
+  <li>The 2.25 million minutes per coin are the engineering scale. The learner&rsquo;s statistical sample is the rule&rsquo;s alarms: 1,373 rows, of which 13 are crashes (11 in the training years, 2 in the test years). XGBoost ranked the two test-year crashes 75th and 460th of 592.</li>
+  <li>The team&rsquo;s original presentation reported 3 of 5 test episodes caught (60% recall). The corrected re-run did not reproduce it. Even taken at face value, 3 of 5 has a 95% interval of 15% to 95%, and narrowing it to &plusmn;10 points would take about 100 episodes, roughly 40 years at this rate.</li>
+  <li>Over 2020&ndash;24 the rule&rsquo;s alarms hit crashes more often than their own timing explains (13 positive alarms against 7.0 expected when the alarm sequence is shifted in time, p = 0.018), but the rule&rsquo;s thresholds were set on those same years.</li>
+</ul>
+
+<h3>The frozen rule on data the project never used</h3>
+<figure><img src="assets/btc_outofsample.png" alt="Of 66 crash episodes outside the original sample, the spectral rule caught 17 and a volatility rule with the same number of alerts caught 14."><figcaption>Episodes outside the original sample caught by the frozen rule and by an equal-budget volatility rule.</figcaption></figure>
+<div class="tw"><table class="rtable">
+  <tr><th>Frozen rule vs. volatility rule with the same alarm count</th><th>2018-01 to 2020-09</th><th>2025-01 to 2026-09</th></tr>
+  <tr><td>Crash episodes</td><td class="n">62</td><td class="n">4</td></tr>
+  <tr class="base"><td>Spectral rule: alarms, caught, recall (95% interval)</td><td class="n">1,162; 16; 26% (16&ndash;38%)</td><td class="n">647; 1; 25% (1&ndash;81%)</td></tr>
+  <tr><td>Volatility rule: alarms, caught, recall (95% interval)</td><td class="n">1,159; 14; 23% (13&ndash;35%)</td><td class="n">647; 0; 0% (0&ndash;60%)</td></tr>
+  <tr><td>Precision, spectral vs. volatility</td><td class="n">1.4% vs. 1.2%</td><td class="n">0.15% vs. 0%</td></tr>
+  <tr><td>Correlation of the two z-scores where the rules can fire</td><td class="n">0.85</td><td class="n">0.85</td></tr>
+</table></div>
+<ul>
+  <li>Over the 66 episodes the spectral rule caught 17 and the volatility rule 14: 8 only by the spectral rule, 5 only by the volatility rule and 9 by both. The exact McNemar p-value is 0.58; with 13 discordant episodes, significance would have needed an 11&ndash;2 split. With the volatility threshold frozen from 2021&ndash;22 instead, 17 against 13 (p = 0.39).</li>
+  <li>The in-sample timing result did not replicate: on 2018&ndash;20 the frozen rule touched 16 episodes against 11.5 expected under time shifts (p = 0.09).</li>
+  <li>Both rules catch about a quarter of episodes at a precision near 1%, so roughly 99 of 100 alarms are false. The frozen XGBoost filter caught none of the 4 episodes in 2025&ndash;26 at any cutoff.</li>
+</ul>
+
+<h3>Bursts versus volatility</h3>
+<div class="tw"><table class="rtable">
+  <tr><th>Volatility scale kept by the null</th><th>Real daily blocks with bursts beyond their surrogates</th><th>Null-model blocks</th><th>Difference, 95% interval over calendar quarters (points)</th></tr>
+  <tr><td>12 hours</td><td class="n">41.0%</td><td class="n">4.5%</td><td class="n">+31.1 to +41.6</td></tr>
+  <tr><td>6 hours</td><td class="n">32.4%</td><td class="n">3.2%</td><td class="n">+22.7 to +35.7</td></tr>
+  <tr><td>4 hours</td><td class="n">22.1%</td><td class="n">3.6%</td><td class="n">+12.3 to +25.0</td></tr>
+  <tr><td>2 hours</td><td class="n">7.2%</td><td class="n">2.7%</td><td class="n">+1.3 to +7.7</td></tr>
+  <tr><td>1 hour</td><td class="n">2.3%</td><td class="n">1.4%</td><td class="n">&minus;1.3 to +3.0</td></tr>
+</table></div>
+<ul>
+  <li>The bursts are real. Against surrogates that keep 12-hour volatility and the intraday pattern, real blocks exceed null-model blocks in all 18 calendar quarters.</li>
+  <li>About a fifth of the excess is intraday seasonality: keeping the minute-of-day volatility profile lowers the flagged share from 50% to 41%. On weekdays volatility runs at 1.5 to 1.65 times its median around the U.S. open (13:30&ndash;16:15 UTC), and the first minute of each hour at about 1.35 times.</li>
+  <li>The rest is volatility clustering. The excess shrinks as the null keeps faster volatility and is gone at one hour, which under the rule written in advance ended the search for another mechanism.</li>
+  <li>Bursts of 20 minutes planted in synthetic data showed that the test resolves about an hour, so structure shorter than that is neither shown nor ruled out.</li>
+</ul>
+
+<h3>Forecasting volatility and tail risk</h3>
+<div class="tw"><table class="rtable">
+  <tr><th>Added to the HAR model, 2025-01 to 2026-09 (evaluated once)</th><th>Clark&ndash;West t, 1 h</th><th>Clark&ndash;West t, 4 h</th><th>QLIKE gain, 1 h</th><th>QLIKE gain, 4 h</th></tr>
+  <tr><td>Spectral level <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">h</annotation></semantics></math></span></td><td class="n">2.17 (p 0.015)</td><td class="n">2.43 (p 0.008)</td><td class="n">&minus;0.003%</td><td class="n">+0.02%</td></tr>
+  <tr><td>Scale-free spectral share</td><td class="n">0.73</td><td class="n">&minus;0.80</td><td class="n">0.00%</td><td class="n">+0.002%</td></tr>
+  <tr><td>Cross-coin cohesion</td><td class="n">3.31 (p 0.0005)</td><td class="n">3.52 (p 0.0002)</td><td class="n">+0.10%</td><td class="n">+0.10%</td></tr>
+</table></div>
+<ul>
+  <li>The spectral level works as a volatility measurement but adds nothing as a forecast. It correlates 0.96 with last-hour realized variance, and its Clark&ndash;West rejections come with loss changes below 0.03%.</li>
+  <li>The scale-free share adds nothing beyond volatility, and its correlation with volatility changed sign after the fit years (&minus;0.16 and &minus;0.13 in 2021&ndash;22, +0.05 to +0.13 in 2023&ndash;26).</li>
+  <li>Cross-coin cohesion is detectable over 15,000 hours and survives a Bonferroni bound over the 24 volatility tests on Clark&ndash;West, but it improves forecast loss by only 0.1%.</li>
+  <li>Neither spectral input improves the 5% quantile of the next four-hour return.</li>
+  <li>The spectral signal behaves as a volatility measure, and the system mostly reacted to crashes already under way.</li>
+</ul>
+
+<h2 id="ongoing">Ongoing</h2>
+<p>Whether any warning comes before a crash begins became the question of my sole-authored paper, <a href="crash-early-warning.html">How Much of Crash Early Warning Is Early?</a>, now under review at the <i>Journal of Forecasting</i>.</p>
+
+</main>
+<footer>&copy; 2026 Yeong Kyeong (YK) Shin. Last updated November 2026.</footer>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Risk Disclosure Quality and Stock Liquidity | Yeong Kyeong (YK) Shin</title>
+<meta name="description" content="Embedding-based textual analysis of risk disclosure in 32,314 Korean annual reports.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yeong Kyeong (YK) Shin">
+<meta property="og:title" content="Risk Disclosure Quality and Stock Liquidity | Yeong Kyeong (YK) Shin">
+<meta property="og:description" content="Embedding-based textual analysis of risk disclosure in 32,314 Korean annual reports.">
+<meta property="og:url" content="https://ykshin-0831.github.io/risk-disclosure-nlp.html">
+<meta property="og:image" content="https://ykshin-0831.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.tlink{color:inherit}
+.tlink:hover{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:saturate(1.2) blur(6px)}
+.nav .in{max-width:860px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nav .brand{font-weight:600;color:var(--ink);white-space:nowrap}
+.nav .brand b{color:var(--accent)}
+.nav .links{display:flex;gap:18px;font-size:.95rem;flex-wrap:wrap;justify-content:flex-end}
+.nav .links a{color:var(--muted)}
+.nav .links a:hover{color:var(--accent);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:0 22px}
+.about{display:grid;grid-template-columns:1fr 190px;gap:34px;align-items:start;padding:46px 0 10px}
+.about.nophoto{grid-template-columns:1fr}
+h1{font-size:2.35rem;font-weight:300;margin:0 0 4px;letter-spacing:-.01em;line-height:1.15}
+h1 b{font-weight:700;color:var(--accent)}
+.affil{color:var(--muted);margin:0 0 20px;font-size:1rem}
+.about p{margin:0 0 14px;max-width:62ch}
+.photo img{width:100%;border-radius:8px;display:block;box-shadow:0 1px 3px rgba(16,38,70,.15)}
+.social{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0 6px}
+.social a{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-size:.95rem}
+.social a:hover{color:var(--accent);text-decoration:none}
+.social svg{width:20px;height:20px;color:var(--accent)}
+section{padding:30px 0 6px}
+h2{font-size:1.45rem;font-weight:600;color:var(--accent);margin:0 0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.news{width:100%;border-collapse:collapse}
+.news td{padding:7px 0;vertical-align:top;border-bottom:1px solid #f1f2f4}
+.news td:first-child{width:110px;font-weight:600;color:var(--muted);white-space:nowrap;font-size:.93rem;padding-right:14px}
+.pub{display:grid;grid-template-columns:200px 1fr;gap:22px;padding:20px 0;border-bottom:1px solid #f1f2f4}
+.pub:last-child{border-bottom:0}
+.pub .thumb{position:relative}
+.pub .thumb img{width:100%;border:1px solid var(--line);border-radius:6px;background:#fff;display:block}
+.badge{display:inline-block;font-size:.74rem;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;margin-bottom:8px}
+.badge.wip{background:#6b7480}
+.pub .title{font-weight:700;font-size:1.06rem;line-height:1.4;margin:0 0 4px}
+.pub .authors{margin:0 0 2px;font-size:.96rem}
+.pub .authors b{text-decoration:underline;text-underline-offset:3px}
+.pub .venue{margin:0 0 8px;color:var(--muted);font-size:.95rem}
+.pub .venue i{color:var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-top:8px}
+.btn{font-family:inherit;display:inline-block;font-size:.78rem;font-weight:600;letter-spacing:.02em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:2px 10px;line-height:1.6;background:#fff;cursor:pointer}
+.btn:hover{background:var(--accent);color:#fff;text-decoration:none}
+.btn[aria-expanded="true"]{background:var(--accent);color:#fff}
+.abs{margin:10px 0 2px;padding:12px 16px;border-left:3px solid var(--accent);background:#f7f9fc;font-size:.95rem;border-radius:0 6px 6px 0}
+.abs p{margin:0 0 10px}
+.abs p:last-child{margin-bottom:0}
+.abs figure{margin:10px 0 4px}
+.abs figure img{width:100%;border:1px solid var(--line);border-radius:6px}
+.abs figcaption{font-size:.84rem;color:var(--muted);margin-top:4px}
+.projects{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.card img{width:100%;display:block;border-bottom:1px solid var(--line)}
+.card .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.card h3{font-size:1.06rem;margin:0 0 2px;line-height:1.35}
+.card .meta{color:var(--muted);font-size:.9rem;margin:0 0 10px}
+.card p{margin:0 0 10px;font-size:.95rem}
+.card ul{margin:0 0 10px;padding-left:18px;font-size:.93rem}
+.card li{margin:0 0 4px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.tag{font-size:.76rem;background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 8px}
+.card .btns{margin-top:auto}
+.skills{display:grid;grid-template-columns:170px 1fr;gap:6px 18px;font-size:.96rem}
+.skills dt{font-weight:600;color:var(--muted)}
+.skills dd{margin:0}
+footer{max-width:860px;margin:30px auto 0;padding:22px 22px 40px;color:var(--muted);font-size:.86rem;border-top:1px solid var(--line)}
+@media (max-width:720px){
+ .about{grid-template-columns:1fr;gap:18px;padding-top:30px} .photo{max-width:160px;order:-1}
+ h1{font-size:1.9rem}
+ .pub{grid-template-columns:1fr;gap:12px} .pub .thumb{max-width:420px}
+ .projects{grid-template-columns:1fr}
+ .skills{grid-template-columns:1fr;gap:2px} .skills dd{margin-bottom:8px}
+ .nav .in{padding:10px 16px} .nav .brand{font-size:.95rem} .nav .links{gap:10px;font-size:.84rem;flex-wrap:nowrap}
+ .news td:first-child{width:76px;padding-right:10px}
+}
+@media (max-width:380px){.nav .in{padding:10px 12px;gap:8px} .nav .links{gap:8px;font-size:.8rem}}
+@media (max-width:340px){.nav .in{flex-wrap:wrap;row-gap:4px} .nav .links{flex-wrap:wrap;justify-content:flex-start}}
+
+.keyres{background:var(--accent-soft);border-radius:8px;padding:14px 18px 6px;margin:18px 0 0}
+.keyres .kh{font-weight:700;color:var(--accent);margin:0 0 6px}
+.keyres ul{margin:0 0 8px;padding-left:20px}
+.keyres li{margin:0 0 6px}
+.detail{max-width:780px;margin:0 auto;padding:36px 22px 10px}
+.crumb{font-size:.9rem;margin:0 0 18px}
+.detail h1{font-size:1.85rem;font-weight:700;line-height:1.25;color:var(--accent);letter-spacing:-.01em;margin:0 0 6px}
+.detail .sub{font-size:1.1rem;color:var(--ink);margin:0 0 10px}
+.detail .status{color:var(--muted);margin:0 0 14px}
+.detail h2{font-size:1.35rem;margin:42px 0 12px;scroll-margin-top:70px}
+.detail h3{font-size:1.06rem;margin:26px 0 8px;color:var(--ink)}
+.detail h4{font-size:.97rem;margin:18px 0 6px;color:var(--muted)}
+.detail p{margin:0 0 12px}
+.detail p.lead{font-size:1.04rem}
+.detail ul,.detail ol{margin:0 0 12px;padding-left:22px}
+.detail li{margin:0 0 7px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 18px;margin:18px 0 0;font-size:.92rem}
+.toc a{color:var(--muted)}
+.toc a:hover{color:var(--accent)}
+.facts{display:grid;grid-template-columns:120px 1fr;gap:8px 18px;margin:22px 0 6px;padding:16px 18px;background:#f7f9fc;border-radius:8px;font-size:.95rem}
+.facts dt{font-weight:600;color:var(--muted)}
+.facts dd{margin:0}
+.detail figure{margin:16px 0 18px}
+.detail figure img{width:100%;border:1px solid var(--line);border-radius:6px;display:block}
+.detail figcaption{font-size:.86rem;color:var(--muted);margin-top:6px}
+.rtable{width:100%;border-collapse:collapse;font-size:.93rem;margin:6px 0 14px}
+.rtable th,.rtable td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.rtable th{color:var(--muted);font-weight:600}
+.rtable td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+.rtable tr.grp td{font-weight:600;color:var(--accent);background:#f7f9fc}
+.rtable tr.base td{background:#f7f9fc}
+.note{font-size:.9rem;color:var(--muted)}
+.eq{overflow-x:auto;margin:10px 0 14px;padding:10px 4px;font-size:1.06rem}
+.eq math{display:block}
+math{font-size:1.04em}
+.codefig{margin:14px 0 18px}
+pre.code{background:#f6f8fa;border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto;font-size:.82rem;line-height:1.55;margin:0}
+pre.code code{font-family:"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;color:#1f2328}
+pre.code .k{color:#cf222e}
+pre.code .s{color:#0a3069}
+pre.code .c{color:#6e7781;font-style:italic}
+pre.code .n{color:#0550ae}
+pre.code .f{color:#8250df}
+.flow{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:8px;margin:12px 0 18px}
+.flow .node{border:1px solid #c9d3e3;border-radius:6px;padding:9px 10px;background:#fff;display:flex;flex-direction:column;gap:3px}
+.flow .node b{font-size:.86rem;color:var(--accent);display:flex;align-items:center;gap:6px}
+.flow .node span{font-size:.8rem;color:var(--muted);line-height:1.35}
+.flow .step{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700}
+.tw{overflow-x:auto}
+.timeline{display:flex;margin:12px 0 6px;border-radius:6px;overflow:hidden;font-size:.84rem;text-align:center}
+.timeline div{padding:9px 8px;color:#fff}
+.timeline .sel{background:#6b7480;flex:1155}
+.timeline .eval{background:var(--accent);flex:941}
+.tl-cap{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:14px}
+.rule{counter-reset:r;list-style:none;padding-left:0}
+.rule li{counter-increment:r;padding-left:28px;position:relative}
+.rule li::before{content:counter(r);position:absolute;left:0;top:.15em;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+@media (max-width:720px){.facts{grid-template-columns:1fr;gap:2px} .facts dd{margin-bottom:8px} .detail h1{font-size:1.5rem} .rtable{font-size:.86rem}
+ .flow{grid-template-columns:1fr 1fr} .eq{font-size:.92rem}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="in">
+  <a class="brand" href="index.html">YK <b>Shin</b></a>
+  <nav class="links" aria-label="Sections">
+    <a href="index.html#projects">projects</a><a href="index.html#papers">papers</a><a href="index.html#news">news</a><a href="index.html#background">background</a><a href="index.html#skills">tools</a>
+  </nav>
+</div></header>
+<main class="detail">
+<p class="crumb"><a href="index.html#papers">Papers</a></p>
+<h1>Risk Disclosure Quality and Stock Liquidity</h1>
+<p class="sub">Evidence from Embedding-Based Textual Analysis of Korean Unstructured Corporate Filings</p>
+<p class="status"><b>Yeong Kyeong Shin</b> and Jangho Gil. Under external peer review at <i>Asia-Pacific Journal of Accounting &amp; Economics</i>, submitted August 2026.</p>
+
+<dl class="facts">
+  <dt>My role</dt><dd>First author. I wrote the pipeline and ran the full-population analysis.</dd>
+  <dt>Data</dt><dd>32,314 annual reports (FY2011 to 2024) from OpenDART, 1.08 million risk sentences, and daily Korea Exchange trading records</dd>
+  <dt>Methods</dt><dd>Korean NLP (KSS, OKT), KoSimCSE embeddings, character n-gram similarity, panel regression with firm-clustered errors, split-sample validation, Benjamini&ndash;Hochberg FDR</dd>
+</dl>
+<nav class="toc" aria-label="On this page"><a href="#question">Research question</a><a href="#design">Design</a><a href="#findings">Findings</a><a href="#ongoing">Ongoing</a></nav>
+
+<h2 id="question">Research question</h2>
+<p class="lead">How broad, renewed and firm-specific is the risk disclosure of Korean listed firms, and is it reflected in stock liquidity, filing-day trading, future volatility and distress delistings?</p>
+
+<h2 id="design">Design</h2>
+<h3>Pipeline</h3>
+<div class="flow" style="--cols:3"><div class="node"><b><span class="step">1</span>Collect</b><span>32,314 reports via OpenDART, delisted firms included</span></div><div class="node"><b><span class="step">2</span>Filter</b><span>KSS, OKT, 120-term lexicon: 1.08M risk sentences</span></div><div class="node"><b><span class="step">3</span>Repetition</b><span>exact and 4-gram Jaccard vs. firm&rsquo;s t&minus;1</span></div><div class="node"><b><span class="step">4</span>Classify</b><span>KoSimCSE, 9 seed-anchored categories</span></div><div class="node"><b><span class="step">5</span>Measure</b><span>entropy, novelty, RDQI per firm-year</span></div><div class="node"><b><span class="step">6</span>Test</b><span>firm-year panel, pre-specified A/B tests, BH</span></div></div>
+<p>The filter runs as a resumable multiprocess job with per-worker SQLite outputs (about 9 hours for 32,314 reports on a laptop). A refactored library has parity tests against the original code paths, and the repository runs 52 automated tests in CI.</p>
+
+<h3>Measures</h3>
+<h4>Repetition</h4>
+<p>Sentences are normalized and compared with the firm&rsquo;s own sentences from the previous year, first exactly and then by Jaccard similarity of their character 4-gram sets <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span> and <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span>:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∩</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∪</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow></mfrac><mo separator="true">,</mo><mspace width="2em"/><mtext>near-repeat</mtext><mtext>  </mtext><mo>⟺</mo><mtext>  </mtext><mi>J</mi><mo>&gt;</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">J(A,B)=\frac{|A\cap B|}{|A\cup B|},\qquad \text{near-repeat}\iff J&gt;0.8</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo stretchy="false">)</mo><mo>≤</mo><mfrac><mrow><mi>min</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">∣</mi><mi>A</mi><mi mathvariant="normal">∣</mi><mo separator="true">,</mo><mi mathvariant="normal">∣</mi><mi>B</mi><mi mathvariant="normal">∣</mi><mo stretchy="false">)</mo></mrow><mrow><mi>max</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">∣</mi><mi>A</mi><mi mathvariant="normal">∣</mi><mo separator="true">,</mo><mi mathvariant="normal">∣</mi><mi>B</mi><mi mathvariant="normal">∣</mi><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">J(A,B)\le\frac{\min(|A|,|B|)}{\max(|A|,|B|)}</annotation></semantics></math></span></div>
+<p>The set-size bound skips most pairs without any set algebra. Run on the archived corpus, the re-implemented measure reproduces the original pipeline&rsquo;s repetition rates to within 0.1 percentage point.</p>
+<figure class="codefig"><pre class="code"><code><span class="k">def</span> <span class="f">repeated_flags</span>(cur, prev, thresh=<span class="n">0.8</span>):
+    prev_set = set(prev)
+    prev_g = [(len(pg), pg) <span class="k">for</span> pg <span class="k">in</span> map(grams, prev)]
+    exact = np.zeros(len(cur), dtype=bool); near = np.zeros(len(cur), dtype=bool)
+    <span class="k">for</span> i, s <span class="k">in</span> enumerate(cur):
+        <span class="k">if</span> s <span class="k">in</span> prev_set:
+            exact[i] = near[i] = <span class="k">True</span>; <span class="k">continue</span>
+        g = grams(s); n = len(g)
+        <span class="k">for</span> lp, pg <span class="k">in</span> prev_g:
+            <span class="k">if</span> min(n, lp) &lt;= thresh * max(n, lp):
+                <span class="k">continue</span>
+            inter = len(g &amp; pg)
+            <span class="k">if</span> inter / (n + lp - inter) &gt; thresh:
+                near[i] = <span class="k">True</span>; <span class="k">break</span>
+    <span class="k">return</span> exact, near</code></pre><figcaption>Exact and near repetition with the exact set-size pre-check (fulltext/novelty.py).</figcaption></figure>
+<h4>Classification</h4>
+<p>KoSimCSE embeddings are stored as float16 memory maps. 27 seed sentences define nine category centroids, which are re-estimated once with weights <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mi>cos</mi><mo>⁡</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\cos^{2}</annotation></semantics></math></span>; a 0.35 cosine floor applies to the seed stage and the weights, and every sentence then takes its nearest refined centroid (99.66% of final cosines are at least 0.35). Re-running the procedure reproduces the archived labels for 99.98% of sentences. I compared the encoder with BGE-M3 and OpenAI text-embedding-3-small.</p>
+<h4>Disclosure quality index</h4>
+<p>With <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">p_{k}</annotation></semantics></math></span> the share of a firm-year&rsquo;s risk sentences in category <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span>:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msup><mi>H</mi><mo lspace="0em" rspace="0em">∗</mo></msup><mo>=</mo><mo>−</mo><mfrac><mn>1</mn><mrow><mi>ln</mi><mo>⁡</mo><mn>9</mn></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mn>9</mn></munderover><msub><mi>p</mi><mi>k</mi></msub><mi>ln</mi><mo>⁡</mo><msub><mi>p</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">H^{*}=-\frac{1}{\ln 9}\sum_{k=1}^{9}p_{k}\ln p_{k}</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>novelty</mtext><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mn mathvariant="double-struck">1</mn><mo stretchy="false">{</mo><mi>s</mi><mtext> near-repeats</mtext><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\text{novelty}=1-\frac{1}{n}\sum_{s=1}^{n}\mathbb{1}\{s\ \text{near-repeats}\}</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">D</mi><mi mathvariant="normal">Q</mi><mi mathvariant="normal">I</mi></mrow><mo>=</mo><mstyle scriptlevel="0" displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mtext> </mtext><mi>z</mi><mo stretchy="false">(</mo><msup><mi>H</mi><mo lspace="0em" rspace="0em">∗</mo></msup><mo stretchy="false">)</mo><mo>+</mo><mstyle scriptlevel="0" displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mtext> </mtext><mi>z</mi><mo stretchy="false">(</mo><mtext>novelty</mtext><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{RDQI}=\tfrac12\,z(H^{*})+\tfrac12\,z(\text{novelty})</annotation></semantics></math></span></div>
+<figure class="codefig"><pre class="code"><code><span class="k">def</span> <span class="f">entropy_measures</span>(df, catcol):
+    ct = pd.crosstab([df.stock_code, df.fiscal_year], df[catcol]).reindex(columns=CATS, fill_value=<span class="n">0</span>)
+    n = ct.sum(<span class="n">1</span>); p = ct.div(n, axis=<span class="n">0</span>)
+    <span class="k">with</span> np.errstate(divide=<span class="s">&#x27;ignore&#x27;</span>, invalid=<span class="s">&#x27;ignore&#x27;</span>):
+        H = -(p * np.log(p.where(p &gt; <span class="n">0</span>, <span class="n">1</span>))).sum(<span class="n">1</span>)
+    k = (ct &gt; <span class="n">0</span>).sum(<span class="n">1</span>)
+    out = pd.DataFrame({<span class="s">&#x27;n&#x27;</span>: n, <span class="s">&#x27;H_star&#x27;</span>: H / np.log(<span class="n">9</span>), <span class="s">&#x27;richness&#x27;</span>: np.log(k) / np.log(<span class="n">9</span>), <span class="s">&#x27;k&#x27;</span>: k})
+    out[<span class="s">&#x27;evenness_J&#x27;</span>] = np.where(k &gt; <span class="n">1</span>, H / np.log(k.clip(lower=<span class="n">2</span>)), np.nan)
+    <span class="k">return</span> out</code></pre><figcaption>Normalized entropy, richness and evenness per firm-year (fulltext/build_measures.py).</figcaption></figure>
+
+<h3>Inference</h3>
+<p>Outcomes are regressed on the disclosure measures with year fixed effects and standard errors clustered by firm:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>y</mi><mrow><mi>i</mi><mo separator="true">,</mo><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>α</mi><mi>t</mi></msub><mo>+</mo><mi>β</mi><mtext> </mtext><msub><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">D</mi><mi mathvariant="normal">Q</mi><mi mathvariant="normal">I</mi></mrow><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>+</mo><msup><mi>γ</mi><mi mathvariant="normal">⊤</mi></msup><msub><mi>X</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>ε</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">y_{i,t+1}=\alpha_{t}+\beta\,\mathrm{RDQI}_{it}+\gamma^{\top}X_{it}+\varepsilon_{it}</annotation></semantics></math></span></div>
+<p>Firms are hashed into halves A and B. Each pre-specified test runs on A, is re-run on B only when <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><msub><mi>t</mi><mi>A</mi></msub><mi mathvariant="normal">∣</mi><mo>≥</mo><mn>1.96</mn></mrow><annotation encoding="application/x-tex">|t_A|\ge 1.96</annotation></semantics></math></span>, and counts as confirmed only when the same term repeats sign and significance on B. Benjamini&ndash;Hochberg q-values are reported for the pre-specified family and for all tests. Filing-day abnormal volume is the log ratio of mean event-window volume to mean estimation-window volume, with a [+1,+2] window because DART filings carry a date but no time.</p>
+
+<h2 id="findings">Findings</h2>
+<p>The results are not posted while the paper is under external peer review. They will be added here once the review is complete.</p>
+
+<h2 id="ongoing">Ongoing</h2>
+<ul>
+  <li>Under external peer review at the <i>Asia-Pacific Journal of Accounting &amp; Economics</i> (submitted August 2026).</li>
+  <li>A follow-up paper with Prof. Jangho Gil, &ldquo;MD&amp;A Narrative Composition and Corporate Distress: Boilerplate Displacement of Firm-Specific Risk Disclosure in Korean Listed Firms,&rdquo; is in preparation for submission by June 2027.</li>
+</ul>
+
+</main>
+<footer>&copy; 2026 Yeong Kyeong (YK) Shin. Last updated November 2026.</footer>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Guard: Validating a Portfolio Risk Engine | Yeong Kyeong (YK) Shin</title>
+<meta name="description" content="Validating the VaR engine of a portfolio risk product: backtests, ablation, a temporal split and a study of breach clustering.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yeong Kyeong (YK) Shin">
+<meta property="og:title" content="AI Guard: Validating a Portfolio Risk Engine | Yeong Kyeong (YK) Shin">
+<meta property="og:description" content="Validating the VaR engine of a portfolio risk product: backtests, ablation, a temporal split and a study of breach clustering.">
+<meta property="og:url" content="https://ykshin-0831.github.io/ai-guard.html">
+<meta property="og:image" content="https://ykshin-0831.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.tlink{color:inherit}
+.tlink:hover{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:saturate(1.2) blur(6px)}
+.nav .in{max-width:860px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nav .brand{font-weight:600;color:var(--ink);white-space:nowrap}
+.nav .brand b{color:var(--accent)}
+.nav .links{display:flex;gap:18px;font-size:.95rem;flex-wrap:wrap;justify-content:flex-end}
+.nav .links a{color:var(--muted)}
+.nav .links a:hover{color:var(--accent);text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:0 22px}
+.about{display:grid;grid-template-columns:1fr 190px;gap:34px;align-items:start;padding:46px 0 10px}
+.about.nophoto{grid-template-columns:1fr}
+h1{font-size:2.35rem;font-weight:300;margin:0 0 4px;letter-spacing:-.01em;line-height:1.15}
+h1 b{font-weight:700;color:var(--accent)}
+.affil{color:var(--muted);margin:0 0 20px;font-size:1rem}
+.about p{margin:0 0 14px;max-width:62ch}
+.photo img{width:100%;border-radius:8px;display:block;box-shadow:0 1px 3px rgba(16,38,70,.15)}
+.social{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0 6px}
+.social a{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-size:.95rem}
+.social a:hover{color:var(--accent);text-decoration:none}
+.social svg{width:20px;height:20px;color:var(--accent)}
+section{padding:30px 0 6px}
+h2{font-size:1.45rem;font-weight:600;color:var(--accent);margin:0 0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.news{width:100%;border-collapse:collapse}
+.news td{padding:7px 0;vertical-align:top;border-bottom:1px solid #f1f2f4}
+.news td:first-child{width:110px;font-weight:600;color:var(--muted);white-space:nowrap;font-size:.93rem;padding-right:14px}
+.pub{display:grid;grid-template-columns:200px 1fr;gap:22px;padding:20px 0;border-bottom:1px solid #f1f2f4}
+.pub:last-child{border-bottom:0}
+.pub .thumb{position:relative}
+.pub .thumb img{width:100%;border:1px solid var(--line);border-radius:6px;background:#fff;display:block}
+.badge{display:inline-block;font-size:.74rem;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;margin-bottom:8px}
+.badge.wip{background:#6b7480}
+.pub .title{font-weight:700;font-size:1.06rem;line-height:1.4;margin:0 0 4px}
+.pub .authors{margin:0 0 2px;font-size:.96rem}
+.pub .authors b{text-decoration:underline;text-underline-offset:3px}
+.pub .venue{margin:0 0 8px;color:var(--muted);font-size:.95rem}
+.pub .venue i{color:var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-top:8px}
+.btn{font-family:inherit;display:inline-block;font-size:.78rem;font-weight:600;letter-spacing:.02em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:2px 10px;line-height:1.6;background:#fff;cursor:pointer}
+.btn:hover{background:var(--accent);color:#fff;text-decoration:none}
+.btn[aria-expanded="true"]{background:var(--accent);color:#fff}
+.abs{margin:10px 0 2px;padding:12px 16px;border-left:3px solid var(--accent);background:#f7f9fc;font-size:.95rem;border-radius:0 6px 6px 0}
+.abs p{margin:0 0 10px}
+.abs p:last-child{margin-bottom:0}
+.abs figure{margin:10px 0 4px}
+.abs figure img{width:100%;border:1px solid var(--line);border-radius:6px}
+.abs figcaption{font-size:.84rem;color:var(--muted);margin-top:4px}
+.projects{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.card img{width:100%;display:block;border-bottom:1px solid var(--line)}
+.card .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.card h3{font-size:1.06rem;margin:0 0 2px;line-height:1.35}
+.card .meta{color:var(--muted);font-size:.9rem;margin:0 0 10px}
+.card p{margin:0 0 10px;font-size:.95rem}
+.card ul{margin:0 0 10px;padding-left:18px;font-size:.93rem}
+.card li{margin:0 0 4px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.tag{font-size:.76rem;background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 8px}
+.card .btns{margin-top:auto}
+.skills{display:grid;grid-template-columns:170px 1fr;gap:6px 18px;font-size:.96rem}
+.skills dt{font-weight:600;color:var(--muted)}
+.skills dd{margin:0}
+footer{max-width:860px;margin:30px auto 0;padding:22px 22px 40px;color:var(--muted);font-size:.86rem;border-top:1px solid var(--line)}
+@media (max-width:720px){
+ .about{grid-template-columns:1fr;gap:18px;padding-top:30px} .photo{max-width:160px;order:-1}
+ h1{font-size:1.9rem}
+ .pub{grid-template-columns:1fr;gap:12px} .pub .thumb{max-width:420px}
+ .projects{grid-template-columns:1fr}
+ .skills{grid-template-columns:1fr;gap:2px} .skills dd{margin-bottom:8px}
+ .nav .in{padding:10px 16px} .nav .brand{font-size:.95rem} .nav .links{gap:10px;font-size:.84rem;flex-wrap:nowrap}
+ .news td:first-child{width:76px;padding-right:10px}
+}
+@media (max-width:380px){.nav .in{padding:10px 12px;gap:8px} .nav .links{gap:8px;font-size:.8rem}}
+@media (max-width:340px){.nav .in{flex-wrap:wrap;row-gap:4px} .nav .links{flex-wrap:wrap;justify-content:flex-start}}
+
+.keyres{background:var(--accent-soft);border-radius:8px;padding:14px 18px 6px;margin:18px 0 0}
+.keyres .kh{font-weight:700;color:var(--accent);margin:0 0 6px}
+.keyres ul{margin:0 0 8px;padding-left:20px}
+.keyres li{margin:0 0 6px}
+.detail{max-width:780px;margin:0 auto;padding:36px 22px 10px}
+.crumb{font-size:.9rem;margin:0 0 18px}
+.detail h1{font-size:1.85rem;font-weight:700;line-height:1.25;color:var(--accent);letter-spacing:-.01em;margin:0 0 6px}
+.detail .sub{font-size:1.1rem;color:var(--ink);margin:0 0 10px}
+.detail .status{color:var(--muted);margin:0 0 14px}
+.detail h2{font-size:1.35rem;margin:42px 0 12px;scroll-margin-top:70px}
+.detail h3{font-size:1.06rem;margin:26px 0 8px;color:var(--ink)}
+.detail h4{font-size:.97rem;margin:18px 0 6px;color:var(--muted)}
+.detail p{margin:0 0 12px}
+.detail p.lead{font-size:1.04rem}
+.detail ul,.detail ol{margin:0 0 12px;padding-left:22px}
+.detail li{margin:0 0 7px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 18px;margin:18px 0 0;font-size:.92rem}
+.toc a{color:var(--muted)}
+.toc a:hover{color:var(--accent)}
+.facts{display:grid;grid-template-columns:120px 1fr;gap:8px 18px;margin:22px 0 6px;padding:16px 18px;background:#f7f9fc;border-radius:8px;font-size:.95rem}
+.facts dt{font-weight:600;color:var(--muted)}
+.facts dd{margin:0}
+.detail figure{margin:16px 0 18px}
+.detail figure img{width:100%;border:1px solid var(--line);border-radius:6px;display:block}
+.detail figcaption{font-size:.86rem;color:var(--muted);margin-top:6px}
+.rtable{width:100%;border-collapse:collapse;font-size:.93rem;margin:6px 0 14px}
+.rtable th,.rtable td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.rtable th{color:var(--muted);font-weight:600}
+.rtable td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+.rtable tr.grp td{font-weight:600;color:var(--accent);background:#f7f9fc}
+.rtable tr.base td{background:#f7f9fc}
+.note{font-size:.9rem;color:var(--muted)}
+.eq{overflow-x:auto;margin:10px 0 14px;padding:10px 4px;font-size:1.06rem}
+.eq math{display:block}
+math{font-size:1.04em}
+.codefig{margin:14px 0 18px}
+pre.code{background:#f6f8fa;border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto;font-size:.82rem;line-height:1.55;margin:0}
+pre.code code{font-family:"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;color:#1f2328}
+pre.code .k{color:#cf222e}
+pre.code .s{color:#0a3069}
+pre.code .c{color:#6e7781;font-style:italic}
+pre.code .n{color:#0550ae}
+pre.code .f{color:#8250df}
+.flow{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:8px;margin:12px 0 18px}
+.flow .node{border:1px solid #c9d3e3;border-radius:6px;padding:9px 10px;background:#fff;display:flex;flex-direction:column;gap:3px}
+.flow .node b{font-size:.86rem;color:var(--accent);display:flex;align-items:center;gap:6px}
+.flow .node span{font-size:.8rem;color:var(--muted);line-height:1.35}
+.flow .step{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700}
+.tw{overflow-x:auto}
+.timeline{display:flex;margin:12px 0 6px;border-radius:6px;overflow:hidden;font-size:.84rem;text-align:center}
+.timeline div{padding:9px 8px;color:#fff}
+.timeline .sel{background:#6b7480;flex:1155}
+.timeline .eval{background:var(--accent);flex:941}
+.tl-cap{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:14px}
+.rule{counter-reset:r;list-style:none;padding-left:0}
+.rule li{counter-increment:r;padding-left:28px;position:relative}
+.rule li::before{content:counter(r);position:absolute;left:0;top:.15em;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+@media (max-width:720px){.facts{grid-template-columns:1fr;gap:2px} .facts dd{margin-bottom:8px} .detail h1{font-size:1.5rem} .rtable{font-size:.86rem}
+ .flow{grid-template-columns:1fr 1fr} .eq{font-size:.92rem}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="in">
+  <a class="brand" href="index.html">YK <b>Shin</b></a>
+  <nav class="links" aria-label="Sections">
+    <a href="index.html#projects">projects</a><a href="index.html#papers">papers</a><a href="index.html#news">news</a><a href="index.html#background">background</a><a href="index.html#skills">tools</a>
+  </nav>
+</div></header>
+<main class="detail">
+<p class="crumb"><a href="index.html#projects">Projects</a></p>
+<h1>AI Guard: Validating a Portfolio Risk Engine</h1>
+<p class="sub">VaR backtesting, ablation, pre-specified model selection, code verification and a study of breach clustering</p>
+<p class="status">Artificial Intelligence &amp; Business Model Laboratory (Prof. Kyoung Jun Lee), team lead of six, September 2025 to present</p>
+<dl class="facts">
+  <dt>My role</dt><dd>I led the six-member team building the prototype, designed and ran its statistical validation, re-implemented the estimators and backtest, and ran the clustering study.</dd>
+  <dt>Product</dt><dd>Recomputes a portfolio&rsquo;s one-day VaR and CVaR in Korean won as users add or remove holdings, for individual investors and the institutions that serve them</dd>
+  <dt>Data</dt><dd>Daily adjusted closes: a KOSPI 200 ETF (KODEX 200, 2,562 forecast days) and 33 Korean stocks forming 300 random portfolios of 3, 6 and 13 stocks (Dirichlet weights), from 2016 so that March 2020 is included. For a test on new data, 2007&ndash;2015 prices for the 19 of these stocks that pass every data check, all still listed today, so that sample leans toward survivors</dd>
+  <dt>Methods</dt><dd>EWMA volatility, Gaussian, Student-t, historical and filtered historical simulation, CAViaR, Kupiec, Christoffersen and DQ tests with Monte Carlo calibration, simulation power analysis, model confidence set, FZ0 joint VaR&ndash;CVaR scoring, pooled LightGBM and linear quantile regression, ablation, temporal split, date-block bootstrap, a pre-specified test on new data</dd>
+</dl>
+<div class="keyres"><p class="kh">Key results</p><ul>
+  <li>The original Gaussian VaR was breached 70 times in 2,562 days against 26 expected. Filtered historical simulation cut this to 29 and replaced it in the prototype. For users, the loss figure the app says will be exceeded on 1 day in 100 had been exceeded on 2.7 days in 100; with FHS it is 1.1.</li>
+  <li>Chosen on 2018&ndash;22 data, it was rejected by the Kupiec test for none of the 300 random portfolios in 2023&ndash;26. The portfolios share 33 stocks and the same trading days, so these are not 300 independent tests, and each test cannot tell 1% from 1.5% (see the power analysis). On unseen 2010&ndash;15 data it kept a 1.16% breach rate. My own re-implementation reproduces the ablation table and both periods&rsquo; rejection rates.</li>
+  <li>Breaches still cluster in some periods. In 2023&ndash;26 almost all of it came from two double crashes, and neither faster volatility nor market-stress features removed it without losing accuracy.</li>
+</ul></div>
+<nav class="toc" aria-label="On this page"><a href="#question">Research question</a><a href="#design">Design</a><a href="#findings">Findings</a><a href="#ongoing">Ongoing</a></nav>
+
+<h2 id="question">Research question</h2>
+<p class="lead">AI Guard tells users how much their portfolio could lose on a bad day: a one-day 99% VaR that should be exceeded on about 1 day in 100. Is it exceeded that rarely, which modeling choice is responsible when it is not, and once the frequency is right, why do the remaining breaches arrive in clusters?</p>
+<figure class="shot"><a href="assets/aiguard_app.png"><img src="assets/aiguard_app.png" alt="Three phone screens of AI Guard: adjusting holdings with sliders and comparing risk with a saved baseline, a risk report with the one-day 99% VaR and CVaR and each holding's share of losses, and loss scenarios from past crashes." loading="lazy"></a><figcaption>Mobile design for AI Guard, shown with English labels; the working prototype is a Korean web page. Every number on the screens is an output of that prototype, and the curve is schematic. The report and scenario screens show a 20 million won portfolio of three stocks; the first screen shows its holdings changed to a 42 million won mix and compares the risk figures with the saved baseline. Each figure carries a plain-language note, for example that the VaR is not the largest possible loss.</figcaption></figure>
+
+<h2 id="design">Design</h2>
+<h3>Models</h3>
+<p>Every forecast for day <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t+1</annotation></semantics></math></span> uses data through day <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span> only. Volatility follows the RiskMetrics recursion</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mi>σ</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mn>2</mn></msubsup><mo>=</mo><mi>λ</mi><mtext> </mtext><msubsup><mi>σ</mi><mi>t</mi><mn>2</mn></msubsup><mo>+</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>λ</mi><mo stretchy="false">)</mo><mtext> </mtext><msubsup><mi>r</mi><mi>t</mi><mn>2</mn></msubsup><mo separator="true">,</mo><mspace width="2em"/><mi>λ</mi><mo>=</mo><mn>0.94</mn></mrow><annotation encoding="application/x-tex">\sigma_{t+1}^{2}=\lambda\,\sigma_{t}^{2}+(1-\lambda)\,r_{t}^{2},\qquad \lambda=0.94</annotation></semantics></math></span></div>
+<p>The original design used a Gaussian quantile on 250-day volatility. Filtered historical simulation (FHS) standardizes the last 500 returns by their own volatility and rescales the empirical tail by the current one:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">R</mi></mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mtext>G</mtext></msubsup><mo>=</mo><msub><mi>z</mi><mn>0.99</mn></msub><mtext> </mtext><msub><mi>σ</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><mspace width="2em"/><msub><mover accent="true"><mi>z</mi><mo>^</mo></mover><mi>s</mi></msub><mo>=</mo><mfrac><msub><mi>r</mi><mi>s</mi></msub><msub><mi>σ</mi><mi>s</mi></msub></mfrac></mrow><annotation encoding="application/x-tex">\mathrm{VaR}^{\text{G}}_{t+1}=z_{0.99}\,\sigma_{t+1},\qquad \hat z_s=\frac{r_s}{\sigma_s}</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">R</mi></mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mtext>FHS</mtext></msubsup><mo>=</mo><mo>−</mo><msub><mi>σ</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mtext> </mtext><msub><mi>Q</mi><mn>0.01</mn></msub><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">(</mo><mo stretchy="false">{</mo><msub><mover accent="true"><mi>z</mi><mo>^</mo></mover><mi>s</mi></msub><msubsup><mo stretchy="false">}</mo><mrow><mi>s</mi><mo>=</mo><mi>t</mi><mo>−</mo><mn>499</mn></mrow><mi>t</mi></msubsup><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{VaR}^{\text{FHS}}_{t+1}=-\sigma_{t+1}\,Q_{0.01}\big(\{\hat z_s\}_{s=t-499}^{t}\big)</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">V</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">R</mi></mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mtext>FHS</mtext></msubsup><mo>=</mo><mo>−</mo><msub><mi>σ</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mtext> </mtext><mi mathvariant="double-struck">E</mi><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">[</mo><mover accent="true"><mi>z</mi><mo>^</mo></mover><mo>∣</mo><mover accent="true"><mi>z</mi><mo>^</mo></mover><mo>≤</mo><msub><mi>Q</mi><mn>0.01</mn></msub><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">]</mo></mrow><annotation encoding="application/x-tex">\mathrm{CVaR}^{\text{FHS}}_{t+1}=-\sigma_{t+1}\,\mathbb{E}\big[\hat z\mid \hat z\le Q_{0.01}\big]</annotation></semantics></math></span></div>
+
+<h3>Backtests</h3>
+<p>A breach is <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mn mathvariant="double-struck">1</mn><mo stretchy="false">{</mo><msub><mi>L</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>&gt;</mo><msub><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">R</mi></mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">I_{t+1}=\mathbb{1}\{L_{t+1}&gt;\mathrm{VaR}_{t+1}\}</annotation></semantics></math></span>. With <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span> breaches in <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span> days, the Kupiec proportion-of-failures test compares <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>p</mi><mo>^</mo></mover><mo>=</mo><mi>x</mi><mi mathvariant="normal">/</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">\hat p=x/n</annotation></semantics></math></span> with <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.01</mn></mrow><annotation encoding="application/x-tex">p=0.01</annotation></semantics></math></span>:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">R</mi></mrow><mtext>POF</mtext></msub><mo>=</mo><mo>−</mo><mn>2</mn><mi>ln</mi><mo>⁡</mo><mfrac><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><msup><mo stretchy="false">)</mo><mrow><mi>n</mi><mo>−</mo><mi>x</mi></mrow></msup><mtext> </mtext><msup><mi>p</mi><mi>x</mi></msup></mrow><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mover accent="true"><mi>p</mi><mo>^</mo></mover><msup><mo stretchy="false">)</mo><mrow><mi>n</mi><mo>−</mo><mi>x</mi></mrow></msup><mtext> </mtext><msup><mover accent="true"><mi>p</mi><mo>^</mo></mover><mi>x</mi></msup></mrow></mfrac><mtext>  </mtext><mo>∼</mo><mtext>  </mtext><msubsup><mi>χ</mi><mn>1</mn><mn>2</mn></msubsup><mtext> under </mtext><msub><mi>H</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\mathrm{LR}_{\text{POF}}=-2\ln\frac{(1-p)^{n-x}\,p^{x}}{(1-\hat p)^{n-x}\,\hat p^{x}}\;\sim\;\chi^{2}_{1}\ \text{under } H_0</annotation></semantics></math></span></div>
+<p>The Christoffersen test checks whether a breach makes the next one more likely, through a first-order Markov chain on <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">I_t</annotation></semantics></math></span>. Rejection is at the 5% level.</p>
+
+<h3>Ablation and pre-specified selection</h3>
+<p>Seven methods separate the two ingredients of the fix, the volatility model and the tail shape, on the ETF and on 300 random portfolios. The selection rule was fixed in advance: choose the method with the lowest Kupiec rejection rate in the selection period, then evaluate it once on the later period. The split was added after a backtest over the whole period, which already included 2023&ndash;26, so the later period was not unseen. What it shows is that the rule picks FHS from 2018&ndash;22 alone; FHS uses standard settings (&lambda; = 0.94, 500 days) that were not tuned.</p>
+<div class="timeline"><div class="sel">Selection, 1,155 days</div><div class="eval">Evaluation, 941 days</div></div>
+<div class="tl-cap"><span>2018-04-20</span><span>2022-12-29 | 2023-01-02</span><span>2026-11-12</span></div>
+
+<h3>Verification</h3>
+<h4>Look-ahead invariance</h4>
+<p>For a cutoff <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">t_0</annotation></semantics></math></span>, every return after <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">t_0</annotation></semantics></math></span> is replaced with synthetic values, and every forecast up to the cutoff must stay unchanged, for all seven methods:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mover accent="true"><mi>f</mi><mo>^</mo></mover><mi>t</mi></msub><mo stretchy="false">(</mo><mi>D</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mover accent="true"><mi>f</mi><mo>^</mo></mover><mi>t</mi></msub><mo stretchy="false">(</mo><mover accent="true"><mi>D</mi><mo>~</mo></mover><mo stretchy="false">)</mo><mspace width="2em"/><mi mathvariant="normal">∀</mi><mtext> </mtext><mi>t</mi><mo>≤</mo><msub><mi>t</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\hat f_{t}(D)=\hat f_{t}(\tilde D)\qquad \forall\, t\le t_0</annotation></semantics></math></span></div>
+<p>where <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>D</mi><mo>~</mo></mover></mrow><annotation encoding="application/x-tex">\tilde D</annotation></semantics></math></span> equals the data <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span> up to <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">t_0</annotation></semantics></math></span> and is synthetic afterwards.</p>
+<h4>Second implementation and my re-implementation</h4>
+<p>A separately written implementation, with its own unit tests for the Gaussian formula, a hand-worked FHS example, Kupiec boundary cases and look-ahead invariance, was compared with the original date by date on 301 portfolios. I then re-implemented the estimators, tests and backtest myself in six steps (portfolio returns, EWMA, seven VaR forecasts, next-day breaches, Kupiec and Christoffersen, 300 portfolios with the selection rule) and checked them against the archived returns.</p>
+
+<h3>Clustering study</h3>
+<p>Three stages. The clustering of FHS breaches in 2023&ndash;26 had already been seen, and it is what prompted the study. The candidate models and the pass rule were then fixed on 2018&ndash;22 before any candidate was run on 2023&ndash;26; this was recorded internally, not publicly time-stamped.</p>
+<h4>1. Calibrated clustering tests</h4>
+<p>With about 9 expected breaches per portfolio in 2023&ndash;26, textbook <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>χ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math></span> cutoffs are unreliable. Each clustering statistic <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span> is compared with <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mn>999</mn></mrow><annotation encoding="application/x-tex">B=999</annotation></semantics></math></span> simulated sequences of independent Bernoulli(0.01) breaches of the same length:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>p</mi><mtext>MC</mtext></msub><mo>=</mo><mfrac><mrow><mn>1</mn><mo>+</mo><mi mathvariant="normal">#</mi><mo stretchy="false">{</mo><mi>b</mi><mo>:</mo><mtext>  </mtext><msubsup><mi>T</mi><mi>b</mi><mo lspace="0em" rspace="0em">∗</mo></msubsup><mo>≥</mo><mi>T</mi><mo stretchy="false">}</mo></mrow><mrow><mi>B</mi><mo>+</mo><mn>1</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">p_{\text{MC}}=\frac{1+\#\{b:\;T^{*}_{b}\ge T\}}{B+1}</annotation></semantics></math></span></div>
+<p>The statistics are the Christoffersen independence ratio and a dynamic quantile (DQ) test that regresses centered breaches on a constant, four lagged breaches and the standardized VaR:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">Q</mi></mrow><mo>=</mo><mfrac><mrow><msup><mi>g</mi><mi mathvariant="normal">⊤</mi></msup><mo stretchy="false">(</mo><msup><mi>X</mi><mi mathvariant="normal">⊤</mi></msup><mi>X</mi><msup><mo stretchy="false">)</mo><mo lspace="0em" rspace="0em">+</mo></msup><mi>g</mi></mrow><mrow><mi>α</mi><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false">)</mo></mrow></mfrac><mo separator="true">,</mo><mspace width="2em"/><mi>g</mi><mo>=</mo><msup><mi>X</mi><mi mathvariant="normal">⊤</mi></msup><mo stretchy="false">(</mo><mi>I</mi><mo>−</mo><mi>α</mi><mn mathvariant="bold">1</mn><mo stretchy="false">)</mo><mo separator="true">,</mo><mspace width="2em"/><mi>α</mi><mo>=</mo><mn>0.01</mn></mrow><annotation encoding="application/x-tex">\mathrm{DQ}=\frac{g^{\top}(X^{\top}X)^{+}g}{\alpha(1-\alpha)},\qquad g=X^{\top}(I-\alpha\mathbf{1}),\qquad \alpha=0.01</annotation></semantics></math></span></div>
+<h4>2. Two explanations</h4>
+<ul>
+  <li>Volatility may react too slowly. I tested FHS with <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>∈</mo><mo stretchy="false">{</mo><mn>0.94</mn><mo separator="true">,</mo><mtext> </mtext><mn>0.90</mn><mo separator="true">,</mo><mtext> </mtext><mn>0.85</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\lambda\in\{0.94,\,0.90,\,0.85\}</annotation></semantics></math></span>, with <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi></mrow><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></span> chosen on 2018&ndash;22 only, by the calibrated Christoffersen rejection share.</li>
+  <li>The quantile may need to be modeled directly. I tested CAViaR (symmetric absolute value), fitted for each portfolio on 2018&ndash;22 by minimizing the 99% quantile loss and then frozen:</li>
+</ul>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">R</mi></mrow><mi>t</mi></msub><mo>=</mo><mi>a</mi><mo>+</mo><mi>b</mi><mtext> </mtext><msub><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">R</mi></mrow><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><mi>c</mi><mtext> </mtext><mi mathvariant="normal">∣</mi><msub><mi>r</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi mathvariant="normal">∣</mi><mo separator="true">,</mo><mspace width="2em"/><mi>a</mi><mo>≥</mo><mn>0</mn><mo separator="true">,</mo><mtext>  </mtext><mn>0</mn><mo>≤</mo><mi>b</mi><mo>≤</mo><mn>0.995</mn><mo separator="true">,</mo><mtext>  </mtext><mi>c</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mathrm{VaR}_{t}=a+b\,\mathrm{VaR}_{t-1}+c\,|r_{t-1}|,\qquad a\ge 0,\; 0\le b\le 0.995,\; c\ge 0</annotation></semantics></math></span></div>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><munder><mrow><mi>min</mi><mo>⁡</mo></mrow><mrow><mi>a</mi><mo separator="true">,</mo><mi>b</mi><mo separator="true">,</mo><mi>c</mi></mrow></munder><mtext> </mtext><mfrac><mn>1</mn><mrow><mi mathvariant="normal">∣</mi><mi>S</mi><mi mathvariant="normal">∣</mi></mrow></mfrac><munder><mo>∑</mo><mrow><mi>t</mi><mo>∈</mo><mi>S</mi></mrow></munder><mo fence="false" stretchy="true" minsize="1.8em" maxsize="1.8em">[</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false">)</mo><mtext> </mtext><mo stretchy="false">(</mo><msub><mi>L</mi><mi>t</mi></msub><mo>−</mo><msub><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">R</mi></mrow><mi>t</mi></msub><msup><mo stretchy="false">)</mo><mo lspace="0em" rspace="0em">+</mo></msup><mo>+</mo><mi>α</mi><mtext> </mtext><mo stretchy="false">(</mo><msub><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">R</mi></mrow><mi>t</mi></msub><mo>−</mo><msub><mi>L</mi><mi>t</mi></msub><msup><mo stretchy="false">)</mo><mo lspace="0em" rspace="0em">+</mo></msup><mo fence="false" stretchy="true" minsize="1.8em" maxsize="1.8em">]</mo><mo separator="true">,</mo><mspace width="2em"/><mi>S</mi><mo>=</mo><mtext>2018–22</mtext></mrow><annotation encoding="application/x-tex">\min_{a,b,c}\ \frac{1}{|S|}\sum_{t\in S}\Big[(1-\alpha)\,(L_t-\mathrm{VaR}_t)^{+}+\alpha\,(\mathrm{VaR}_t-L_t)^{+}\Big],\qquad S=\text{2018–22}</annotation></semantics></math></span></div>
+<h4>3. Pass rule on 2023&ndash;26</h4>
+<p>A candidate improves on FHS with <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.94</mn></mrow><annotation encoding="application/x-tex">\lambda=0.94</annotation></semantics></math></span> only if all four hold:</p>
+<ol class="rule">
+  <li>Its share of portfolios rejected by the calibrated Christoffersen test is strictly lower.</li>
+  <li>Its share rejected by the calibrated DQ test is not higher.</li>
+  <li>Its share rejected by the Kupiec test is not higher.</li>
+  <li>Its mean 99% quantile loss is not higher.</li>
+</ol>
+
+<h3>Power of the tests</h3>
+<p>To read rejection shares built on about 9 expected breaches, I simulated how often each test of the clustering study (Kupiec, Christoffersen and the four-lag DQ) detects specific departures at <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>941</mn></mrow><annotation encoding="application/x-tex">n=941</annotation></semantics></math></span>: independent breaches at 1.5% or 2%, and breaches that keep a 1% rate but cluster, with the probability of a breach on the day after a breach raised to <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>11</mn></msub><mo>=</mo><mn>0.10</mn></mrow><annotation encoding="application/x-tex">p_{11}=0.10</annotation></semantics></math></span> or <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.20</mn></mrow><annotation encoding="application/x-tex">0.20</annotation></semantics></math></span>. To keep the clustered processes at a 1% stationary rate,</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>p</mi><mn>01</mn></msub><mo>=</mo><mfrac><mrow><mi>α</mi><mtext> </mtext><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msub><mi>p</mi><mn>11</mn></msub><mo stretchy="false">)</mo></mrow><mrow><mn>1</mn><mo>−</mo><mi>α</mi></mrow></mfrac><mo separator="true">,</mo><mspace width="2em"/><mi>Pr</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>I</mi><mi>t</mi></msub><mo>=</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><mfrac><msub><mi>p</mi><mn>01</mn></msub><mrow><mn>1</mn><mo>−</mo><msub><mi>p</mi><mn>11</mn></msub><mo>+</mo><msub><mi>p</mi><mn>01</mn></msub></mrow></mfrac><mo>=</mo><mi>α</mi></mrow><annotation encoding="application/x-tex">p_{01}=\frac{\alpha\,(1-p_{11})}{1-\alpha},\qquad \Pr(I_t=1)=\frac{p_{01}}{1-p_{11}+p_{01}}=\alpha</annotation></semantics></math></span></div>
+<p>Monte Carlo thresholds come from 5,000 separate null sequences, each scenario uses 2,000 fresh sequences, and the DQ test&rsquo;s VaR regressor is a fixed synthetic path.</p>
+
+<h3>Loss-based model comparison</h3>
+<p>Coverage tests ask whether breaches occur at the right rate and independently; scoring rules ask which forecast is closer. For FHS, Student-t (4 df) and the Gaussian model on 2023&ndash;26, each day&rsquo;s loss is averaged over the 300 portfolios, and every bootstrap draw resamples the same 20-day blocks of days for all models, which keeps the shocks the portfolios share.</p>
+<ul>
+  <li><b>Model confidence set</b> (Hansen, Lunde and Nason, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>max</mi><mo>⁡</mo></msub></mrow><annotation encoding="application/x-tex">T_{\max}</annotation></semantics></math></span> statistic, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mn>999</mn></mrow><annotation encoding="application/x-tex">B=999</annotation></semantics></math></span>): the models that cannot be shown to be worse than the others at the 95% level, with quantile loss as the primary score.</li>
+  <li><b>Joint VaR and CVaR score:</b> FZ0, from the Fissler&ndash;Ziegel class of scores that are consistent for the pair, for loss <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">L</annotation></semantics></math></span>, VaR <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi></mrow><annotation encoding="application/x-tex">q</annotation></semantics></math></span> and CVaR <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi></mrow><annotation encoding="application/x-tex">s</annotation></semantics></math></span>:</li>
+</ul>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mi mathvariant="normal">F</mi><mi mathvariant="normal">Z</mi><mn>0</mn></mrow><mo stretchy="false">(</mo><mi>L</mi><mo separator="true">,</mo><mi>q</mi><mo separator="true">,</mo><mi>s</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mn mathvariant="double-struck">1</mn><mo stretchy="false">{</mo><mi>L</mi><mo>&gt;</mo><mi>q</mi><mo stretchy="false">}</mo><mtext> </mtext><mo stretchy="false">(</mo><mi>L</mi><mo>−</mo><mi>q</mi><mo stretchy="false">)</mo></mrow><mrow><mi>α</mi><mtext> </mtext><mi>s</mi></mrow></mfrac><mo>+</mo><mfrac><mi>q</mi><mi>s</mi></mfrac><mo>+</mo><mi>ln</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mspace width="2em"/><mi>s</mi><mo>≥</mo><mi>q</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mathrm{FZ0}(L,q,s)=\frac{\mathbb{1}\{L&gt;q\}\,(L-q)}{\alpha\,s}+\frac{q}{s}+\ln(s)-1,\qquad s\ge q&gt;0</annotation></semantics></math></span></div>
+<p>The FHS CVaR averages the five lowest of the last 500 standardized returns; the parametric models use closed forms.</p>
+
+<h3>Market-stress quantile models</h3>
+<p>If breaches cluster because the whole market comes under stress, telling the model about market stress should help. One model is fitted on all 300 portfolios together, which gives about 346,500 training rows instead of roughly 12 tail days per portfolio. It predicts the 1% quantile of the next day&rsquo;s standardized return:</p>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>z</mi><mrow><mi>p</mi><mo separator="true">,</mo><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mfrac><msub><mi>r</mi><mrow><mi>p</mi><mo separator="true">,</mo><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><msub><mi>σ</mi><mrow><mi>p</mi><mo separator="true">,</mo><mi>t</mi></mrow></msub></mfrac><mo separator="true">,</mo><mspace width="2em"/><msub><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">R</mi></mrow><mrow><mi>p</mi><mo separator="true">,</mo><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mo>−</mo><msub><mi>σ</mi><mrow><mi>p</mi><mo separator="true">,</mo><mi>t</mi></mrow></msub><mtext> </mtext><msub><mover accent="true"><mi>q</mi><mo>^</mo></mover><mn>0.01</mn></msub><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>X</mi><mrow><mi>p</mi><mo separator="true">,</mo><mi>t</mi></mrow></msub><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">)</mo></mrow><annotation encoding="application/x-tex">z_{p,t+1}=\frac{r_{p,t+1}}{\sigma_{p,t}},\qquad \mathrm{VaR}_{p,t+1}=-\sigma_{p,t}\,\hat q_{0.01}\big(X_{p,t}\big)</annotation></semantics></math></span></div>
+<ul>
+  <li><b>BASE features:</b> <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><msub><mi>r</mi><mrow><mi>p</mi><mo separator="true">,</mo><mi>t</mi></mrow></msub><mi mathvariant="normal">∣</mi></mrow><annotation encoding="application/x-tex">|r_{p,t}|</annotation></semantics></math></span>, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><msub><mi>r</mi><mrow><mi>p</mi><mo separator="true">,</mo><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi mathvariant="normal">∣</mi></mrow><annotation encoding="application/x-tex">|r_{p,t-1}|</annotation></semantics></math></span>, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>p</mi><mo separator="true">,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\sigma_{p,t}</annotation></semantics></math></span> and the number of holdings.</li>
+  <li><b>STRESS adds three:</b> the EWMA volatility of the KOSPI 200 index, the cross-sectional standard deviation of the holdings&rsquo; returns on day <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span>, and their mean pairwise correlation over the last 20 days.</li>
+  <li><b>Models:</b> LightGBM with the quantile loss (primary) and a linear quantile regression with an L1 penalty. LightGBM&rsquo;s depth and learning rate were chosen from four candidates on 2022 data using BASE only, then both versions were refitted on 2018&ndash;22 and frozen for 2023&ndash;26.</li>
+</ul>
+<p>The decision rule was written down before the run (the protocol was not publicly time-stamped). STRESS improves on BASE only if all three hold:</p>
+<ol class="rule">
+  <li>Its share of portfolios with clustered breaches is lower.</li>
+  <li>The 95% interval for its quantile-loss difference from BASE lies below zero, using a 20-day block bootstrap over shared dates.</li>
+  <li>Its share of portfolios rejected by Kupiec is not higher.</li>
+</ol>
+
+<h3>A cause of clustering, tested on new data</h3>
+<p>On 2018&ndash;22 data alone, a breach on a day when the market did not fall sharply was followed by more breaches than a breach on a day of a market-wide drop. That suggested a cause: stock-specific shocks persist and market-wide ones do not. The hypothesis was tested on 2010&ndash;15, a past period no earlier analysis had evaluated (a historical test, not a prospective one), under a pre-specified protocol committed to GitHub before the run (<a href="https://github.com/ykshin-0831/ykshin-0831.github.io/blob/c238bb94639f42fc545499d5b7fa1cf99286fc2c/PROTOCOL_NEWDATA_v1.md">commit c238bb9</a>, 17 November 2026, 15:13 KST). Unlike the OSF preregistrations of the crash warning paper, this is a public commit rather than a registry entry.</p>
+<p>Day <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span> is a market shock day, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">S_t=1</annotation></semantics></math></span>, when the KOSPI 200 return falls more than two volatilities: <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mrow><mi>m</mi><mo separator="true">,</mo><mi>t</mi></mrow></msub><mi mathvariant="normal">/</mi><msub><mi>σ</mi><mrow><mi>m</mi><mo separator="true">,</mo><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>&lt;</mo><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">r_{m,t}/\sigma_{m,t-1}&lt;-2</annotation></semantics></math></span>. Each portfolio-day with a following day falls into one of three groups:</p>
+<ul>
+  <li><b>I:</b> a breach without a market shock (<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mi>t</mi></msub><mo>=</mo><mn>1</mn><mo separator="true">,</mo><mtext> </mtext><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">I_t=1,\ S_t=0</annotation></semantics></math></span>)</li>
+  <li><b>M:</b> a breach on a market shock day (<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mi>t</mi></msub><mo>=</mo><mn>1</mn><mo separator="true">,</mo><mtext> </mtext><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">I_t=1,\ S_t=1</annotation></semantics></math></span>)</li>
+  <li><b>N:</b> neither (<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mi>t</mi></msub><mo>=</mo><mn>0</mn><mo separator="true">,</mo><mtext> </mtext><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">I_t=0,\ S_t=0</annotation></semantics></math></span>)</li>
+</ul>
+<div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>P</mi><mi>X</mi></msub><mo>=</mo><mi>Pr</mi><mo>⁡</mo><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>I</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>1</mn><mo>∣</mo><mi>X</mi><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">)</mo><mo separator="true">,</mo><mspace width="2em"/><mi>R</mi><mo>=</mo><mfrac><msub><mi>P</mi><mi>I</mi></msub><msub><mi>P</mi><mi>N</mi></msub></mfrac><mo separator="true">,</mo><mspace width="2em"/><mi>D</mi><mo>=</mo><msub><mi>P</mi><mi>I</mi></msub><mo>−</mo><msub><mi>P</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">P_X=\Pr\big(I_{t+1}=1\mid X\big),\qquad R=\frac{P_I}{P_N},\qquad D=P_I-P_M</annotation></semantics></math></span></div>
+<p>The hypothesis is supported only if both hold, with intervals from 4,999 bootstrap draws of 20-day date blocks:</p>
+<ol class="rule">
+  <li>The lower end of the 95% interval for <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi></mrow><annotation encoding="application/x-tex">R</annotation></semantics></math></span> is above 1: breaches without a market shock are followed by more breaches than usual.</li>
+  <li>The lower end of the 95% interval for <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span> is above 0: they are followed by more breaches than breaches on market shock days.</li>
+</ol>
+<p>Prices from June 2007 were checked against the earlier file on 2016&ndash;18 and against the KRX daily price limit. 19 of the 33 stocks passed every check; the rest listed later, had stale prices or showed impossible moves. 300 new portfolios were drawn with the original procedure. Also fixed on 2018&ndash;22 was a remedy: after a breach without a market shock, raise the next day&rsquo;s VaR by a factor of 1.45, the value with the lowest pooled quantile loss on 2018&ndash;22. The LightGBM models were applied as frozen on 2018&ndash;22.</p>
+
+<h2 id="findings">Findings</h2>
+<h3>Breach frequency</h3>
+<figure><img src="assets/aiguard_breaches.png" alt="KOSPI 200 ETF 99% VaR breaches: about 26 expected, 70 for the Gaussian model, 29 for filtered historical simulation."><figcaption>One-day 99% VaR breaches over 2,562 trading days on the KOSPI 200 ETF.</figcaption></figure>
+<div class="tw"><table class="rtable">
+  <tr><th>KOSPI 200 ETF, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>2,562</mn></mrow><annotation encoding="application/x-tex">n=2{,}562</annotation></semantics></math></span></th><th>Breaches <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span></th><th><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>p</mi><mo>^</mo></mover></mrow><annotation encoding="application/x-tex">\hat p</annotation></semantics></math></span></th><th><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">R</mi></mrow><mtext>POF</mtext></msub></mrow><annotation encoding="application/x-tex">\mathrm{LR}_{\text{POF}}</annotation></semantics></math></span></th><th>p-value</th></tr>
+  <tr><td>Gaussian, 250-day volatility</td><td class="n">70</td><td class="n">2.73%</td><td class="n">52.74</td><td class="n">3.8&times;10<sup>&minus;13</sup></td></tr>
+  <tr><td>Student-t (4 df), EWMA</td><td class="n">45</td><td class="n">1.76%</td><td class="n">12.08</td><td class="n">0.0005</td></tr>
+  <tr><td>Filtered historical simulation</td><td class="n">29</td><td class="n">1.13%</td><td class="n">0.43</td><td class="n">0.51</td></tr>
+</table></div>
+
+<h3>Ablation on 300 portfolios</h3>
+<div class="tw"><table class="rtable">
+  <tr><th>Method</th><th>Volatility</th><th>Tail</th><th>Median <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>p</mi><mo>^</mo></mover></mrow><annotation encoding="application/x-tex">\hat p</annotation></semantics></math></span></th><th>Kupiec rejected</th></tr>
+  <tr><td>Gaussian (original)</td><td>250-day</td><td>normal</td><td class="n">1.96%</td><td class="n">98%</td></tr>
+  <tr><td>Gaussian</td><td>EWMA</td><td>normal</td><td class="n">1.96%</td><td class="n">97%</td></tr>
+  <tr><td>Historical simulation, 250 days</td><td>none</td><td>empirical</td><td class="n">1.67%</td><td class="n">88%</td></tr>
+  <tr><td>Historical simulation, 500 days</td><td>none</td><td>empirical</td><td class="n">1.62%</td><td class="n">75%</td></tr>
+  <tr><td>Student-t (6 df)</td><td>EWMA</td><td>parametric</td><td class="n">1.38%</td><td class="n">35%</td></tr>
+  <tr><td>Student-t (4 df)</td><td>EWMA</td><td>parametric</td><td class="n">1.24%</td><td class="n">15%</td></tr>
+  <tr><td>Filtered historical simulation</td><td>EWMA</td><td>empirical</td><td class="n">1.19%</td><td class="n">2%</td></tr>
+</table></div>
+<p>EWMA volatility alone or an empirical tail alone left most portfolios rejected; only the combination brought rejections to 2%.</p>
+
+<h3>Out-of-sample selection</h3>
+<div class="tw"><table class="rtable">
+  <tr><th>Method</th><th>Rejected, 2018&ndash;22</th><th>Rejected, 2023&ndash;26</th></tr>
+  <tr><td>Gaussian, 250-day volatility (original)</td><td class="n">88%</td><td class="n">71%</td></tr>
+  <tr><td>Historical simulation, 500 days</td><td class="n">21%</td><td class="n">71%</td></tr>
+  <tr><td>Student-t (4 df), EWMA</td><td class="n">20%</td><td class="n">3%</td></tr>
+  <tr><td>Filtered historical simulation (selected)</td><td class="n">4%</td><td class="n">0%</td></tr>
+</table></div>
+<p>The method chosen on 2018&ndash;22 data was rejected for none of the 300 portfolios in 2023&ndash;26. The portfolios are drawn from the same 33 stocks and share every market shock, so the rejection shares are not counts of independent tests.</p>
+
+<h3>Code verification</h3>
+<div class="tw"><table class="rtable">
+  <tr><th>Second implementation vs. original</th><th>Forecast days</th><th>Predictions per method</th><th>Mismatches</th><th>Max |difference|</th></tr>
+  <tr><td>Gaussian, FHS, Student-t</td><td class="n">1,609</td><td class="n">484,309</td><td class="n">0</td><td class="n">&asymp;3&times;10<sup>&minus;16</sup></td></tr>
+  <tr><td>Gaussian, FHS, 8 refresh rules</td><td class="n">2,096</td><td class="n">630,896</td><td class="n">0</td><td class="n">&asymp;3&times;10<sup>&minus;16</sup></td></tr>
+</table></div>
+<p>My re-implementation reproduces the ablation table above to its reported precision, the 2018&ndash;22 and 2023&ndash;26 rejection rates, and the six-stock base portfolio&rsquo;s breaches (44 for the Gaussian model and 23 for FHS over 2,096 days). Over 1,609 days its base-portfolio forecasts match the original date by date, with a largest difference of about 10<sup>&minus;12</sup> and identical breach days.</p>
+
+<h3>Breach clustering</h3>
+<p>Calibration matters at this sample size: with 930 days the <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>χ</mi><mn>1</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">\chi^2_1</annotation></semantics></math></span> cutoff of 3.84 rejects only 1.4% of independent breach sequences, while the simulated cutoff of 2.16 restores the 5% level. On 2018&ndash;22 data the rule chose <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.85</mn></mrow><annotation encoding="application/x-tex">\lambda=0.85</annotation></semantics></math></span>, whose calibrated Christoffersen rejection share was 0.3% against 5.7% for <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.94</mn></mrow><annotation encoding="application/x-tex">\lambda=0.94</annotation></semantics></math></span>.</p>
+<div class="tw"><table class="rtable">
+  <tr><th>2023&ndash;26, 300 portfolios, 941 days, calibrated tests</th><th>Clustered (Christoffersen)</th><th>Clustered (DQ)</th><th>Kupiec rejected</th><th>Mean VaR</th><th>Quantile loss vs. <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.94</mn></mrow><annotation encoding="application/x-tex">\lambda=0.94</annotation></semantics></math></span></th></tr>
+  <tr class="base"><td>FHS, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.94</mn></mrow><annotation encoding="application/x-tex">\lambda=0.94</annotation></semantics></math></span> (current)</td><td class="n">48%</td><td class="n">33%</td><td class="n">0%</td><td class="n">5.19%</td><td class="n">&ndash;</td></tr>
+  <tr><td>FHS, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.90</mn></mrow><annotation encoding="application/x-tex">\lambda=0.90</annotation></semantics></math></span></td><td class="n">42%</td><td class="n">25%</td><td class="n">1.7%</td><td class="n">5.35%</td><td class="n">&minus;0.7%</td></tr>
+  <tr><td>FHS, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.85</mn></mrow><annotation encoding="application/x-tex">\lambda=0.85</annotation></semantics></math></span> (chosen on 2018&ndash;22)</td><td class="n">35%</td><td class="n">16%</td><td class="n">0.7%</td><td class="n">5.51%</td><td class="n">&minus;1.3%</td></tr>
+  <tr><td>CAViaR, fitted on 2018&ndash;22</td><td class="n">38%</td><td class="n">30%</td><td class="n">22%</td><td class="n">4.81%</td><td class="n">&minus;0.8%</td></tr>
+</table></div>
+<ul>
+  <li>Both candidates reduced clustering and quantile loss, but neither passed the rule fixed in advance.</li>
+  <li>Faster volatility failed only the Kupiec condition: 2 of 300 portfolios were rejected against none, at a 6% higher average VaR. A bootstrap that resamples the same blocks of days for all portfolios puts this difference within noise (95% interval &minus;11 to +6 percentage points).</li>
+  <li>CAViaR left breaches too frequent in 22% of portfolios.</li>
+  <li>Even with faster volatility, about a third of portfolios still cluster.</li>
+  <li>Replacing the weighted log return with the exact daily-rebalanced portfolio return changed breach counts by at most one on the 10 portfolios checked.</li>
+</ul>
+
+<h3>What the tests can detect</h3>
+<p>Share of 2,000 simulated sequences of 941 days that each test rejects at the 5% level, with Monte Carlo thresholds.</p>
+<div class="tw"><table class="rtable">
+  <tr><th>Simulated breach process</th><th>Mean breaches</th><th>Kupiec rejects</th><th>Christoffersen rejects</th><th>DQ (4 lags) rejects</th></tr>
+  <tr class="base"><td>Independent, 1% (correct model)</td><td class="n">9.5</td><td class="n">3.2%</td><td class="n">4.2%</td><td class="n">5.8%</td></tr>
+  <tr><td>Independent, 1.5%</td><td class="n">14.0</td><td class="n">24%</td><td class="n">2.9%</td><td class="n">17%</td></tr>
+  <tr><td>Independent, 2%</td><td class="n">18.8</td><td class="n">69%</td><td class="n">3.7%</td><td class="n">52%</td></tr>
+  <tr><td>Clustered, 1% rate, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>11</mn></msub><mo>=</mo><mn>0.10</mn></mrow><annotation encoding="application/x-tex">p_{11}=0.10</annotation></semantics></math></span></td><td class="n">9.3</td><td class="n">4.3%</td><td class="n">44%</td><td class="n">33%</td></tr>
+  <tr><td>Clustered, 1% rate, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>11</mn></msub><mo>=</mo><mn>0.20</mn></mrow><annotation encoding="application/x-tex">p_{11}=0.20</annotation></semantics></math></span></td><td class="n">9.4</td><td class="n">7.6%</td><td class="n">73%</td><td class="n">63%</td></tr>
+</table></div>
+<ul>
+  <li>With <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>χ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math></span> cutoffs the null rejection rates are 6.7% for Kupiec, 1.7% for Christoffersen and 12.2% for the four-lag DQ, against 3.2%, 4.2% and 5.8% with Monte Carlo thresholds, which supports calibrating by simulation.</li>
+  <li>One portfolio&rsquo;s Kupiec non-rejection is weak evidence: a 1.5% breach rate is caught only 24% of the time. The support for FHS&rsquo;s coverage rests more on its average breach rate across portfolios, 1.16% in 2023&ndash;26, than on the 0% rejection share.</li>
+  <li>Coverage and clustering need separate tests: Kupiec is nearly blind to clustering and Christoffersen to a wrong breach rate. The four-lag DQ responds to both, but it detects less than a one-lag version of the same test (33% against 42% at <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>11</mn></msub><mo>=</mo><mn>0.10</mn></mrow><annotation encoding="application/x-tex">p_{11}=0.10</annotation></semantics></math></span>), so more lags did not bring more power.</li>
+  <li>The clustering rejection shares observed for FHS, 48% for Christoffersen and 33% for DQ, are about what clustered processes with <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>11</mn></msub></mrow><annotation encoding="application/x-tex">p_{11}</annotation></semantics></math></span> between 0.10 and 0.20 produce. Shared crash days make the 300 portfolios dependent, so this gives a rough scale for the clustering, not an estimate of <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>11</mn></msub></mrow><annotation encoding="application/x-tex">p_{11}</annotation></semantics></math></span>.</li>
+  <li>In an analysis added afterwards, I reported intervals instead of pass or fail. Pooled over the 300 portfolios, the 2023&ndash;26 breach rate is 1.16% for FHS (95% date-block interval 0.71% to 1.67%), 1.14% for pooled LightGBM BASE and 1.21% for STRESS: all consistent with 1%, but too uncertain to tell 1% from 1.5%. At the 97.5% level breaches are 2.5 times as frequent, and Kupiec detects a 1.5-fold breach rate 61% of the time instead of about a third. There FHS breached on 2.52% of days (1.91% to 3.19%), Kupiec rejected no portfolio, and 32% still clustered.</li>
+</ul>
+
+<h3>FHS, Student-t and the Gaussian model under loss</h3>
+<div class="tw"><table class="rtable">
+  <tr><th>2023&ndash;26, 300 portfolios, 941 days</th><th>Breach rate</th><th>Mean VaR</th><th>Mean CVaR</th><th>Quantile loss (&times;10<sup>&minus;4</sup>)</th><th>FZ0</th></tr>
+  <tr class="base"><td>FHS</td><td class="n">1.16%</td><td class="n">5.19%</td><td class="n">7.18%</td><td class="n">7.34</td><td class="n">&minus;2.663</td></tr>
+  <tr><td>Student-t (4 df), EWMA</td><td class="n">1.09%</td><td class="n">5.06%</td><td class="n">7.05%</td><td class="n">7.14</td><td class="n">&minus;2.715</td></tr>
+  <tr><td>Gaussian, 250-day volatility</td><td class="n">1.84%</td><td class="n">4.20%</td><td class="n">4.81%</td><td class="n">7.92</td><td class="n">&minus;2.461</td></tr>
+</table></div>
+<ul>
+  <li>In a paired comparison Student-t has 2.8% lower quantile loss than FHS (95% block-bootstrap interval &minus;4.6% to &minus;1.2%). Its FZ0 score is lower too, by 0.052, but that interval (&minus;0.139 to +0.0004) just reaches zero.</li>
+  <li>The 95% model confidence set keeps all three models, under quantile loss (p = 0.26, and the same set with 10-, 20- and 40-day blocks) and under FZ0 (p = 0.24).</li>
+  <li>Average tail losses are dominated by a few crash days, so loss alone cannot even exclude the Gaussian model that Kupiec rejects for 71% of portfolios. Here coverage tests separate the models far more sharply than average losses.</li>
+</ul>
+
+<h3>Market-stress features</h3>
+<div class="tw"><table class="rtable">
+  <tr><th>2023&ndash;26, 300 portfolios, 941 days</th><th>Clustered (Christoffersen)</th><th>Kupiec rejected</th><th>Breach rate</th><th>Quantile loss (&times;10<sup>&minus;4</sup>)</th></tr>
+  <tr class="base"><td>FHS (benchmark)</td><td class="n">48%</td><td class="n">0%</td><td class="n">1.16%</td><td class="n">7.34</td></tr>
+  <tr><td>LightGBM, BASE</td><td class="n">46%</td><td class="n">7.0%</td><td class="n">1.14%</td><td class="n">6.98</td></tr>
+  <tr><td>LightGBM, STRESS</td><td class="n">17%</td><td class="n">11.7%</td><td class="n">1.21%</td><td class="n">7.19</td></tr>
+  <tr><td>Linear, BASE</td><td class="n">57%</td><td class="n">4.7%</td><td class="n">0.89%</td><td class="n">7.12</td></tr>
+  <tr><td>Linear, STRESS</td><td class="n">57%</td><td class="n">6.3%</td><td class="n">0.85%</td><td class="n">7.21</td></tr>
+</table></div>
+<ul>
+  <li>Adding the three stress variables to LightGBM cut the share of portfolios with clustered breaches from 46% to 17%. But it raised quantile loss by 3.0% (95% interval +0.1% to +6.8%) and Kupiec rejections from 7% to 12%, so under the rule fixed before the run the stress information does not count as an improvement.</li>
+  <li>In the linear model the stress variables left clustering unchanged at 57%, and the change in quantile loss, +1.2%, was within noise (95% interval &minus;0.6% to +3.0%).</li>
+  <li>The pre-specified secondary results agree. The drop in clustering holds for 3-, 6- and 13-stock portfolios (to 16&ndash;19%), the loss increase is similar in each (+2.7% to +3.3%), and a four-lag DQ test rejects 11% of STRESS portfolios against 25% for BASE and 31% for FHS.</li>
+  <li>In an exploratory follow-up, splitting the 2023&ndash;26 days into thirds by KOSPI 200 volatility does not support the simple story that the stress model trades calm-day accuracy for stress-day accuracy. Its extra loss comes mostly from the most stressed third (+5.1%, 95% interval &minus;0.5% to +10.0%), and its average VaR there is no higher than BASE&rsquo;s. What changes is the day after a breach: the chance of another breach falls from 8.7% to 4.5%. The stress features make VaR react faster right after a shock, but size it worse across stressed periods.</li>
+  <li>The same split shows that FHS&rsquo;s 1.16% average breach rate hides a pattern by regime: 1.35% on the calmest third of days and 0.95% on the most stressed third.</li>
+  <li>Without stress features, the pooled LightGBM had 4.9% lower quantile loss than FHS and a similar clustering share, but Kupiec rejected it for 7% of portfolios against none for FHS.</li>
+  <li>Monte Carlo precision mattered here. The run&rsquo;s own 999-draw null put the FHS clustering share at 37%, against 48% in the clustering study for the identical breaches. The Christoffersen statistic takes few distinct values: 35 portfolios sit at two values whose true null tail probability is about 0.041, close enough to 5% that a 999-draw estimate can land on either side. The shares above use thresholds from 1,000,000 null draws, which give 48% in both studies; the decision is the same either way.</li>
+</ul>
+
+<h3>A cause of clustering, tested on new data</h3>
+<div class="tw"><table class="rtable">
+  <tr><th>Next-day breach rate after</th><th>2018&ndash;22 (design)</th><th>2010&ndash;15 (new data)</th><th>2023&ndash;26</th></tr>
+  <tr><td>a breach without a market shock, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>I</mi></msub></mrow><annotation encoding="application/x-tex">P_I</annotation></semantics></math></span></td><td class="n">3.14%</td><td class="n">2.92%</td><td class="n">2.01%</td></tr>
+  <tr><td>a breach on a market shock day, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">P_M</annotation></semantics></math></span></td><td class="n">0.50%</td><td class="n">1.76%</td><td class="n">13.2%</td></tr>
+  <tr><td>neither, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">P_N</annotation></semantics></math></span></td><td class="n">1.18%</td><td class="n">1.09%</td><td class="n">0.96%</td></tr>
+  <tr><td><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><msub><mi>P</mi><mi>I</mi></msub><mi mathvariant="normal">/</mi><msub><mi>P</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">R=P_I/P_N</annotation></semantics></math></span> (95% interval)</td><td class="n">2.66 (1.09 to 4.45)</td><td class="n">2.67 (0.98 to 4.86)</td><td class="n">2.08 (0.83 to 3.65)</td></tr>
+  <tr><td><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>=</mo><msub><mi>P</mi><mi>I</mi></msub><mo>−</mo><msub><mi>P</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">D=P_I-P_M</annotation></semantics></math></span>, percentage points</td><td class="n">2.65 (0.64 to 5.29)</td><td class="n">1.16 (&minus;1.51 to 4.00)</td><td class="n">&minus;11.2 (&minus;21.9 to 2.4)</td></tr>
+</table></div>
+<ul>
+  <li>The hypothesis was not supported. On 2010&ndash;15 a breach without a market shock was again followed by about 2.7 times the usual breach rate, but the 95% interval reached down to 0.98, and three quarters of those repeat breaches followed just five dates. Breaches on market shock days were not clearly less persistent. Neither condition held.</li>
+  <li>Market crashes came in chains only in some periods. After a breach on a market shock day, the next-day breach rate was 0.5% in 2018&ndash;22, 1.8% in 2010&ndash;15 and 13.2% in 2023&ndash;26. Much of the heavy clustering of 2023&ndash;26 came from such chains, the kind of persistence the hypothesis had ruled out.</li>
+  <li>Broken down by date after the results were in (an exploratory step), almost all of the 2023&ndash;26 clustering comes from two days on which a market drop was followed by a larger one: KOSPI 200 fell 4.1% and then 9.6% on 2 and 5 August 2024, and 8.3% and then 12.7% on 3 and 4 March 2026. Every portfolio breached on 5 August and 95% on 4 March. These two days account for 297 of the 299 breaches that followed a breach on a market shock day, and for 125 of the 145 portfolios flagged as clustered, which have no other back-to-back breaches. Without breaches on those two second days the clustered share would be about 4%, not 48%. In 2010&ndash;15 most such chains fall in August 2011. The COVID crash of 2020, which built up over weeks, produced few: 1.9% next-day breaches after a breach on a shock day.</li>
+  <li>Clustering depended on the period, but coverage did not. FHS breaches clustered in 7.7% of the new portfolios, against 7.0% in 2018&ndash;22 and 48% in 2023&ndash;26. Its breach rate was 1.16% (95% interval 0.89% to 1.44%), and Kupiec rejected 1 of 300 portfolios.</li>
+  <li>The remedy did what it was built for. Raising the next day&rsquo;s VaR by 1.45 after a breach without a market shock cut the breach rate on those days from 2.9% to 0.55%. Quantile loss was unchanged (&minus;0.004%, 95% interval &minus;0.21% to +0.15%), Kupiec still rejected 1 of 300 portfolios, and the clustered share fell from 7.7% to 5.0%. The factor was fixed on 2018&ndash;22 and not tuned on these data.</li>
+  <li>Earlier model results did not carry over. The LightGBM models fitted on 2018&ndash;22 were too cautious in 2010&ndash;15: breach rates of 0.71% (BASE) and 0.77% (STRESS), with Kupiec rejecting 30% and 21% of portfolios. STRESS clustered more than BASE (13.7% against 6.0%), with no difference in loss (&minus;0.3%, 95% interval &minus;2.1% to +1.3%). Faster volatility (<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.85</mn></mrow><annotation encoding="application/x-tex">\lambda=0.85</annotation></semantics></math></span>) again cut clustering, to 1.0%, at 3.3% higher quantile loss (95% interval +0.8% to +5.4%).</li>
+  <li>At the 97.5% level FHS breached on 2.65% of days (95% interval 2.17% to 3.16%), with no Kupiec rejections and 17% of portfolios clustered.</li>
+  <li>With a shock threshold of &minus;2.5 both conditions would have held, and with &minus;1.5 neither. Both thresholds were set in advance as sensitivity checks that do not change the verdict.</li>
+</ul>
+
+<h3>Engineering decision</h3>
+<p>Incremental revaluation updates only the changed positions instead of revaluing the whole portfolio. Over five repeated benchmark runs it saved 78&ndash;79% of the time at 200 assets, but at six assets, the size of a typical retail portfolio, the difference ranged from &minus;46% to +28% with no consistent gain. Full revaluation already takes milliseconds, so we dropped incremental revaluation from the design.</p>
+
+<h2 id="ongoing">Ongoing</h2>
+<ul>
+  <li>The heavy clustering of 2023&ndash;26 traces almost entirely to two days on which a crash was followed by a larger one, so it is not a steady flaw of the engine, and the stress model that cut it there did not help on 2010&ndash;15. Only 2 of the 33 market shock days in 2023&ndash;26 were followed by another crash, so a next-day warning after every crash would mostly be a false alarm. Showing users the two-day losses of past double crashes may serve them better. A prospective evaluation of the frozen FHS, the post-breach uplift and the stress model from December 2026 is the next test.</li>
+  <li>On new data, the uplift fixed on 2018&ndash;22 removed the excess breaches on the day after a stock-specific breach at no cost in accuracy. The product could raise the displayed loss figure, or add a notice, on those days.</li>
+  <li>The prototype uses FHS. Student-t has lower quantile loss and FHS fewer Kupiec rejections, and the model confidence set cannot separate them, so the choice stays open until the product fixes which criterion comes first.</li>
+  <li>It is still open whether customers read the displayed loss figures correctly and whether the numbers in the LLM-written explanations are accurate.</li>
+</ul>
+
+</main>
+<footer>&copy; 2026 Yeong Kyeong (YK) Shin. Last updated November 2026.</footer>
+</body>
+</html>
