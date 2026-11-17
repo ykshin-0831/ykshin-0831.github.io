@@ -17,15 +17,17 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caladea:ital,wght@0,400;0,700;1,400;1,700&display=swap">
 <style>
+@font-face{font-family:"Newsreader";font-style:normal;font-weight:200 800;font-display:swap;src:url(assets/fonts/newsreader-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Newsreader";font-style:italic;font-weight:200 800;font-display:swap;src:url(assets/fonts/newsreader-latin-wght-italic.woff2) format("woff2")}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:100 900;font-display:swap;src:url(assets/fonts/hanken-grotesk-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Hanken Grotesk";font-style:italic;font-weight:100 900;font-display:swap;src:url(assets/fonts/hanken-grotesk-latin-wght-italic.woff2) format("woff2")}
+
 :root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Cambria,Caladea,Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hanken Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;line-height:1.6}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 .tlink{color:inherit}
@@ -163,28 +165,107 @@ pre.code .f{color:#8250df}
 .rule li::before{content:counter(r);position:absolute;left:0;top:.15em;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
 @media (max-width:720px){.facts{grid-template-columns:1fr;gap:2px} .facts dd{margin-bottom:8px} .detail h1{font-size:1.5rem} .rtable{font-size:.86rem}
  .flow{grid-template-columns:1fr 1fr} .eq{font-size:.92rem}}
+
+h1,h2,h3{font-family:"Newsreader",Georgia,serif;font-weight:500;letter-spacing:-.01em}
+.nav{background:#0e2240;border-bottom:1px solid rgba(255,255,255,.10);backdrop-filter:none}
+.nav .brand,.nav .brand b{color:#fff;font-family:"Newsreader",Georgia,serif}
+.nav .links a{color:#b9c6da}
+.nav .links a:hover{color:#fff}
+
+/* --- design pass: title band consistent with the home hero, reading rhythm --- */
+:root{--warm:#d9a441;--navy:#0e2240;--tint:#f4f6fa;--rule:#dfe4ec;--measure:45rem}
+body{font-size:16.5px;line-height:1.62}
+.nav .in{max-width:880px}
+.nav .brand{font-size:1.15rem;font-weight:600}
+.nav .links a{padding:3px 0;border-bottom:2px solid transparent}
+.nav .links a:hover{border-bottom-color:var(--warm)}
+.nav a:focus-visible,.band a:focus-visible,footer a:focus-visible{outline-color:var(--warm)}
+.detail{max-width:880px;padding:0 22px 64px}
+.band{background:var(--navy);border-image:conic-gradient(var(--navy) 0 0) fill 0/0/0 100vmax;color:#dbe3ef;padding:40px 0 0;margin:0 0 40px}
+.band .crumb{margin:0 0 20px;font-size:.92rem}
+.band .crumb a{color:#b9c6da;display:inline-flex;align-items:center;gap:9px}
+.band .crumb a::before{content:"";width:7px;height:7px;border-left:2px solid var(--warm);border-bottom:2px solid var(--warm);transform:rotate(45deg)}
+.band .crumb a:hover{color:#fff;text-decoration:none}
+.detail .band h1{color:#fff;font-size:clamp(1.9rem,4.4vw,2.7rem);font-weight:500;line-height:1.12;letter-spacing:-.018em;margin:0 0 14px}
+.detail .band .sub{font-family:"Newsreader",Georgia,serif;font-size:1.32rem;line-height:1.36;color:#fff;margin:0 0 16px;max-width:48ch}
+.detail .band .status{color:#a9b8d0;margin:0;max-width:72ch;font-size:.97rem}
+.band .status b{color:#e6ecf5;font-weight:600}
+.band .status i{color:#dbe3ef}
+.band .btns{margin-top:20px}
+.band .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.34);font-size:.86rem;letter-spacing:0;padding:5px 14px;border-radius:999px;line-height:1.5}
+.band .btn:hover{background:#fff;color:var(--navy);border-color:#fff}
+.band .toc{margin:30px 0 0;padding:13px 0 15px;border-top:1px solid rgba(255,255,255,.16);gap:4px 28px;font-size:.94rem}
+.band .toc a{color:#c6d2e3;padding:2px 0;border-bottom:2px solid transparent}
+.band .toc a:hover{color:#fff;text-decoration:none;border-bottom-color:var(--warm)}
+.detail>p,.detail>ul,.detail>ol,.detail>h3,.detail>h4,.facts dd,.keyres ul{max-width:var(--measure)}
+.detail :is(p,li,dd,figcaption,td) a:not(.btn){text-decoration:underline;text-decoration-color:#9fb0c8;text-underline-offset:3px}
+.detail :is(p,li,dd,figcaption,td) a:not(.btn):hover{text-decoration-color:var(--warm);text-decoration-thickness:2px}
+.band .crumb a{text-decoration:none!important}
+.facts{grid-template-columns:130px minmax(0,1fr);gap:0;margin:0;padding:0;background:none;border-radius:0;border-bottom:1px solid var(--rule);font-size:.96rem}
+.facts dt,.facts dd{padding:12px 0;border-top:1px solid var(--rule)}
+.facts dt{color:var(--accent);padding-right:18px}
+.band+.facts dt:first-of-type,.band+.facts dt:first-of-type+dd{border-top:0;padding-top:0}
+.keyres{background:var(--tint);border-left:3px solid var(--warm);border-radius:0 8px 8px 0;padding:18px 22px 10px;margin:30px 0 0}
+.keyres .kh{font-family:"Newsreader",Georgia,serif;font-size:1.28rem;font-weight:500;letter-spacing:-.005em;margin:0 0 8px}
+.keyres li{margin:0 0 9px}
+.detail h2{font-size:1.85rem;line-height:1.2;color:var(--accent);border-bottom:0;padding-bottom:0;margin:64px 0 16px}
+.detail h2::before{content:"";display:block;width:34px;height:3px;background:var(--warm);margin-bottom:16px}
+.detail h3{font-size:1.3rem;line-height:1.3;color:var(--accent);margin:34px 0 8px}
+.detail h4{font-size:.98rem;color:#3f4854;margin:22px 0 6px}
+.detail p{margin:0 0 14px}
+.detail p.lead{font-family:"Newsreader",Georgia,serif;font-size:1.3rem;line-height:1.42;color:var(--navy)}
+.detail figure{margin:22px 0 26px}
+.detail figure img{border-color:var(--rule)}
+.detail figcaption{margin-top:8px;max-width:var(--measure)}
+.rtable{margin:10px 0 18px}
+.rtable th{color:var(--ink);border-bottom:1px solid #aab4c3;vertical-align:bottom}
+.rtable th,.rtable td{padding:8px 10px}
+.rtable th:first-child,.rtable td:first-child{padding-left:0}
+.rtable tr.grp td,.rtable tr.base td{background:var(--tint)}
+.rtable tr.grp td:first-child,.rtable tr.base td:first-child{padding-left:10px}
+.tw{margin:0 0 4px}
+pre.code .c{color:#5c6570}
+footer{max-width:none;margin:0;border-top:0;background:var(--navy);color:#a9b8d0;padding:26px max(22px,calc(50% - 418px)) 30px}
+@media (max-width:720px){
+ .detail{padding-bottom:44px}
+ .band{padding-top:26px;margin-bottom:28px}
+ .detail .band h1{font-size:1.85rem}
+ .detail .band .sub{font-size:1.16rem}
+ .band .toc{margin-top:22px;gap:4px 20px}
+ .facts{grid-template-columns:1fr}
+ .facts dt{padding:12px 0 0} .facts dd{border-top:0;padding:2px 0 12px;margin:0}
+ .band+.facts dt:first-of-type+dd{padding-top:2px}
+ .detail h2{font-size:1.6rem;margin-top:48px}
+ .detail h3{font-size:1.2rem}
+ .detail p.lead{font-size:1.17rem}
+ .keyres{padding:16px 16px 8px}
+ .tw{margin-right:-22px;padding-right:22px}
+ .tw .rtable{min-width:520px}
+}
 </style>
 </head>
 <body>
 <header class="nav"><div class="in">
   <a class="brand" href="index.html">YK <b>Shin</b></a>
   <nav class="links" aria-label="Sections">
-    <a href="index.html#projects">projects</a><a href="index.html#papers">papers</a><a href="index.html#news">news</a><a href="index.html#background">background</a><a href="index.html#skills">tools</a>
+    <a href="index.html#projects">Projects</a><a href="index.html#papers">Papers</a><a href="index.html#news">News</a><a href="index.html#background">Background</a><a href="index.html#skills">Tools</a>
   </nav>
 </div></header>
 <main class="detail">
+<div class="band">
 <p class="crumb"><a href="index.html#projects">Projects</a></p>
 <h1>Bitcoin Drawdown Early Warning</h1>
 <p class="sub">A spectral two-stage warning system, rebuilt and tested out of sample</p>
 <p class="status">FBA Quant project (intercollegiate quantitative finance research group), three-member team, December 2025 to present</p>
 
+<nav class="toc" aria-label="On this page"><a href="#question">Research question</a><a href="#design">Design</a><a href="#findings">Findings</a><a href="#ongoing">Ongoing</a></nav>
+</div>
 <dl class="facts">
   <dt>Follow-up</dt><dd>Led to my sole-authored paper <a href="crash-early-warning.html">How Much of Crash Early Warning Is Early?</a>, which asks the general question with new models, data and evaluation.</dd>
   <dt>My role</dt><dd>I proposed the core signal. I wrote the refactored package, the corrected evaluation, the significance and surrogate checks, the forecast and follow-up studies, and the tests. Teammates built the original detector and the cross-coin analysis.</dd>
   <dt>Data</dt><dd>One-minute Binance klines for BTC, ETH, DOGE, AVAX and SOL, September 2020 to December 2024 (about 2.25 million rows per coin). BTC 2018 to 2020 and 2025 to 2026 held back for follow-up tests whose designs were written into the README before they were run.</dd>
   <dt>Methods</dt><dd>Batched FFT features, XGBoost with a purged time split, equal-budget baselines, McNemar and circular-shift tests, IAAFT surrogates, HAR-X forecasts (QLIKE, Clark&ndash;West)</dd>
 </dl>
-<nav class="toc" aria-label="On this page"><a href="#question">Research question</a><a href="#design">Design</a><a href="#findings">Findings</a><a href="#ongoing">Ongoing</a></nav>
 
 <h2 id="question">Research question</h2>
 <p class="lead">Can a Fourier-based measure of short-horizon price instability warn of sustained 4% Bitcoin drawdowns better than volatility alone, when the system is frozen and tested out of sample against baselines that raise the same number of alerts?</p>
@@ -275,7 +356,7 @@ pre.code .f{color:#8250df}
 
 <h3>Forecasting volatility and tail risk</h3>
 <div class="tw"><table class="rtable">
-  <tr><th>Added to the HAR model, 2025-01 to 2026-09 (evaluated once)</th><th>Clark&ndash;West t, 1 h</th><th>Clark&ndash;West t, 4 h</th><th>QLIKE gain, 1 h</th><th>QLIKE gain, 4 h</th></tr>
+  <tr><th>Added to the HAR model, 2025-01 to 2026-09</th><th>Clark&ndash;West t, 1 h</th><th>Clark&ndash;West t, 4 h</th><th>QLIKE gain, 1 h</th><th>QLIKE gain, 4 h</th></tr>
   <tr><td>Spectral level <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">h</annotation></semantics></math></span></td><td class="n">2.17 (p 0.015)</td><td class="n">2.43 (p 0.008)</td><td class="n">&minus;0.003%</td><td class="n">+0.02%</td></tr>
   <tr><td>Scale-free spectral share</td><td class="n">0.73</td><td class="n">&minus;0.80</td><td class="n">0.00%</td><td class="n">+0.002%</td></tr>
   <tr><td>Cross-coin cohesion</td><td class="n">3.31 (p 0.0005)</td><td class="n">3.52 (p 0.0002)</td><td class="n">+0.10%</td><td class="n">+0.10%</td></tr>

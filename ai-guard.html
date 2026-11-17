@@ -17,15 +17,17 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caladea:ital,wght@0,400;0,700;1,400;1,700&display=swap">
 <style>
+@font-face{font-family:"Newsreader";font-style:normal;font-weight:200 800;font-display:swap;src:url(assets/fonts/newsreader-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Newsreader";font-style:italic;font-weight:200 800;font-display:swap;src:url(assets/fonts/newsreader-latin-wght-italic.woff2) format("woff2")}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:100 900;font-display:swap;src:url(assets/fonts/hanken-grotesk-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Hanken Grotesk";font-style:italic;font-weight:100 900;font-display:swap;src:url(assets/fonts/hanken-grotesk-latin-wght-italic.woff2) format("woff2")}
+
 :root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Cambria,Caladea,Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hanken Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;line-height:1.6}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 .tlink{color:inherit}
@@ -163,20 +165,100 @@ pre.code .f{color:#8250df}
 .rule li::before{content:counter(r);position:absolute;left:0;top:.15em;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
 @media (max-width:720px){.facts{grid-template-columns:1fr;gap:2px} .facts dd{margin-bottom:8px} .detail h1{font-size:1.5rem} .rtable{font-size:.86rem}
  .flow{grid-template-columns:1fr 1fr} .eq{font-size:.92rem}}
+
+h1,h2,h3{font-family:"Newsreader",Georgia,serif;font-weight:500;letter-spacing:-.01em}
+.nav{background:#0e2240;border-bottom:1px solid rgba(255,255,255,.10);backdrop-filter:none}
+.nav .brand,.nav .brand b{color:#fff;font-family:"Newsreader",Georgia,serif}
+.nav .links a{color:#b9c6da}
+.nav .links a:hover{color:#fff}
+
+/* --- design pass: title band consistent with the home hero, reading rhythm --- */
+:root{--warm:#d9a441;--navy:#0e2240;--tint:#f4f6fa;--rule:#dfe4ec;--measure:45rem}
+body{font-size:16.5px;line-height:1.62}
+.nav .in{max-width:880px}
+.nav .brand{font-size:1.15rem;font-weight:600}
+.nav .links a{padding:3px 0;border-bottom:2px solid transparent}
+.nav .links a:hover{border-bottom-color:var(--warm)}
+.nav a:focus-visible,.band a:focus-visible,footer a:focus-visible{outline-color:var(--warm)}
+.detail{max-width:880px;padding:0 22px 64px}
+.band{background:var(--navy);border-image:conic-gradient(var(--navy) 0 0) fill 0/0/0 100vmax;color:#dbe3ef;padding:40px 0 0;margin:0 0 40px}
+.band .crumb{margin:0 0 20px;font-size:.92rem}
+.band .crumb a{color:#b9c6da;display:inline-flex;align-items:center;gap:9px}
+.band .crumb a::before{content:"";width:7px;height:7px;border-left:2px solid var(--warm);border-bottom:2px solid var(--warm);transform:rotate(45deg)}
+.band .crumb a:hover{color:#fff;text-decoration:none}
+.detail .band h1{color:#fff;font-size:clamp(1.9rem,4.4vw,2.7rem);font-weight:500;line-height:1.12;letter-spacing:-.018em;margin:0 0 14px}
+.detail .band .sub{font-family:"Newsreader",Georgia,serif;font-size:1.32rem;line-height:1.36;color:#fff;margin:0 0 16px;max-width:48ch}
+.detail .band .status{color:#a9b8d0;margin:0;max-width:72ch;font-size:.97rem}
+.band .status b{color:#e6ecf5;font-weight:600}
+.band .status i{color:#dbe3ef}
+.band .btns{margin-top:20px}
+.band .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.34);font-size:.86rem;letter-spacing:0;padding:5px 14px;border-radius:999px;line-height:1.5}
+.band .btn:hover{background:#fff;color:var(--navy);border-color:#fff}
+.band .toc{margin:30px 0 0;padding:13px 0 15px;border-top:1px solid rgba(255,255,255,.16);gap:4px 28px;font-size:.94rem}
+.band .toc a{color:#c6d2e3;padding:2px 0;border-bottom:2px solid transparent}
+.band .toc a:hover{color:#fff;text-decoration:none;border-bottom-color:var(--warm)}
+.detail>p,.detail>ul,.detail>ol,.detail>h3,.detail>h4,.facts dd,.keyres ul{max-width:var(--measure)}
+.detail :is(p,li,dd,figcaption,td) a:not(.btn){text-decoration:underline;text-decoration-color:#9fb0c8;text-underline-offset:3px}
+.detail :is(p,li,dd,figcaption,td) a:not(.btn):hover{text-decoration-color:var(--warm);text-decoration-thickness:2px}
+.band .crumb a{text-decoration:none!important}
+.facts{grid-template-columns:130px minmax(0,1fr);gap:0;margin:0;padding:0;background:none;border-radius:0;border-bottom:1px solid var(--rule);font-size:.96rem}
+.facts dt,.facts dd{padding:12px 0;border-top:1px solid var(--rule)}
+.facts dt{color:var(--accent);padding-right:18px}
+.band+.facts dt:first-of-type,.band+.facts dt:first-of-type+dd{border-top:0;padding-top:0}
+.keyres{background:var(--tint);border-left:3px solid var(--warm);border-radius:0 8px 8px 0;padding:18px 22px 10px;margin:30px 0 0}
+.keyres .kh{font-family:"Newsreader",Georgia,serif;font-size:1.28rem;font-weight:500;letter-spacing:-.005em;margin:0 0 8px}
+.keyres li{margin:0 0 9px}
+.detail h2{font-size:1.85rem;line-height:1.2;color:var(--accent);border-bottom:0;padding-bottom:0;margin:64px 0 16px}
+.detail h2::before{content:"";display:block;width:34px;height:3px;background:var(--warm);margin-bottom:16px}
+.detail h3{font-size:1.3rem;line-height:1.3;color:var(--accent);margin:34px 0 8px}
+.detail h4{font-size:.98rem;color:#3f4854;margin:22px 0 6px}
+.detail p{margin:0 0 14px}
+.detail p.lead{font-family:"Newsreader",Georgia,serif;font-size:1.3rem;line-height:1.42;color:var(--navy)}
+.detail figure{margin:22px 0 26px}
+.detail figure img{border-color:var(--rule)}
+.detail figcaption{margin-top:8px;max-width:var(--measure)}
+.rtable{margin:10px 0 18px}
+.rtable th{color:var(--ink);border-bottom:1px solid #aab4c3;vertical-align:bottom}
+.rtable th,.rtable td{padding:8px 10px}
+.rtable th:first-child,.rtable td:first-child{padding-left:0}
+.rtable tr.grp td,.rtable tr.base td{background:var(--tint)}
+.rtable tr.grp td:first-child,.rtable tr.base td:first-child{padding-left:10px}
+.tw{margin:0 0 4px}
+pre.code .c{color:#5c6570}
+footer{max-width:none;margin:0;border-top:0;background:var(--navy);color:#a9b8d0;padding:26px max(22px,calc(50% - 418px)) 30px}
+@media (max-width:720px){
+ .detail{padding-bottom:44px}
+ .band{padding-top:26px;margin-bottom:28px}
+ .detail .band h1{font-size:1.85rem}
+ .detail .band .sub{font-size:1.16rem}
+ .band .toc{margin-top:22px;gap:4px 20px}
+ .facts{grid-template-columns:1fr}
+ .facts dt{padding:12px 0 0} .facts dd{border-top:0;padding:2px 0 12px;margin:0}
+ .band+.facts dt:first-of-type+dd{padding-top:2px}
+ .detail h2{font-size:1.6rem;margin-top:48px}
+ .detail h3{font-size:1.2rem}
+ .detail p.lead{font-size:1.17rem}
+ .keyres{padding:16px 16px 8px}
+ .tw{margin-right:-22px;padding-right:22px}
+ .tw .rtable{min-width:520px}
+}
 </style>
 </head>
 <body>
 <header class="nav"><div class="in">
   <a class="brand" href="index.html">YK <b>Shin</b></a>
   <nav class="links" aria-label="Sections">
-    <a href="index.html#projects">projects</a><a href="index.html#papers">papers</a><a href="index.html#news">news</a><a href="index.html#background">background</a><a href="index.html#skills">tools</a>
+    <a href="index.html#projects">Projects</a><a href="index.html#papers">Papers</a><a href="index.html#news">News</a><a href="index.html#background">Background</a><a href="index.html#skills">Tools</a>
   </nav>
 </div></header>
 <main class="detail">
+<div class="band">
 <p class="crumb"><a href="index.html#projects">Projects</a></p>
 <h1>AI Guard: Validating a Portfolio Risk Engine</h1>
 <p class="sub">VaR backtesting, ablation, pre-specified model selection, code verification and a study of breach clustering</p>
 <p class="status">Artificial Intelligence &amp; Business Model Laboratory (Prof. Kyoung Jun Lee), team lead of six, September 2025 to present</p>
+<nav class="toc" aria-label="On this page"><a href="#question">Research question</a><a href="#design">Design</a><a href="#findings">Findings</a><a href="#ongoing">Ongoing</a></nav>
+</div>
 <dl class="facts">
   <dt>My role</dt><dd>I led the six-member team building the prototype, designed and ran its statistical validation, re-implemented the estimators and backtest, and ran the clustering study.</dd>
   <dt>Product</dt><dd>Recomputes a portfolio&rsquo;s one-day VaR and CVaR in Korean won as users add or remove holdings, for individual investors and the institutions that serve them</dd>
@@ -188,11 +270,10 @@ pre.code .f{color:#8250df}
   <li>Chosen on 2018&ndash;22 data, it was rejected by the Kupiec test for none of the 300 random portfolios in 2023&ndash;26. The portfolios share 33 stocks and the same trading days, so these are not 300 independent tests, and each test cannot tell 1% from 1.5% (see the power analysis). On unseen 2010&ndash;15 data it kept a 1.16% breach rate. My own re-implementation reproduces the ablation table and both periods&rsquo; rejection rates.</li>
   <li>Breaches still cluster in some periods. In 2023&ndash;26 almost all of it came from two double crashes, and neither faster volatility nor market-stress features removed it without losing accuracy.</li>
 </ul></div>
-<nav class="toc" aria-label="On this page"><a href="#question">Research question</a><a href="#design">Design</a><a href="#findings">Findings</a><a href="#ongoing">Ongoing</a></nav>
 
 <h2 id="question">Research question</h2>
 <p class="lead">AI Guard tells users how much their portfolio could lose on a bad day: a one-day 99% VaR that should be exceeded on about 1 day in 100. Is it exceeded that rarely, which modeling choice is responsible when it is not, and once the frequency is right, why do the remaining breaches arrive in clusters?</p>
-<figure class="shot"><a href="assets/aiguard_app.png"><img src="assets/aiguard_app.png" alt="Three phone screens of AI Guard: adjusting holdings with sliders and comparing risk with a saved baseline, a risk report with the one-day 99% VaR and CVaR and each holding's share of losses, and loss scenarios from past crashes." loading="lazy"></a><figcaption>Mobile design for AI Guard, shown with English labels; the working prototype is a Korean web page. Every number on the screens is an output of that prototype, and the curve is schematic. The report and scenario screens show a 20 million won portfolio of three stocks; the first screen shows its holdings changed to a 42 million won mix and compares the risk figures with the saved baseline. Each figure carries a plain-language note, for example that the VaR is not the largest possible loss.</figcaption></figure>
+<figure class="shot"><a href="assets/aiguard_app.png"><img src="assets/aiguard_app.png" alt="Three phone screens of AI Guard: adjusting holdings with sliders and comparing risk with a saved baseline, a risk report with the one-day 99% VaR and CVaR and each holding's share of losses, and loss scenarios from past crashes." loading="lazy"></a><figcaption>Mobile design for AI Guard, shown with English labels; the working prototype is a Korean web page. The won amounts and percentages on the screens are outputs of that prototype, except the 10.0% on the first screen, which I computed from its VaR and the portfolio value; the curve is schematic. The report and scenario screens show a 20 million won portfolio of three stocks; the first screen shows its holdings changed to a 42 million won mix and compares the risk figures with the saved baseline; the comparison pairs two separate runs of the prototype, one for each mix. Each figure carries a plain-language note, for example that the VaR is not the largest possible loss.</figcaption></figure>
 
 <h2 id="design">Design</h2>
 <h3>Models</h3>
@@ -331,7 +412,7 @@ pre.code .f{color:#8250df}
 <p>My re-implementation reproduces the ablation table above to its reported precision, the 2018&ndash;22 and 2023&ndash;26 rejection rates, and the six-stock base portfolio&rsquo;s breaches (44 for the Gaussian model and 23 for FHS over 2,096 days). Over 1,609 days its base-portfolio forecasts match the original date by date, with a largest difference of about 10<sup>&minus;12</sup> and identical breach days.</p>
 
 <h3>Breach clustering</h3>
-<p>Calibration matters at this sample size: with 930 days the <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>χ</mi><mn>1</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">\chi^2_1</annotation></semantics></math></span> cutoff of 3.84 rejects only 1.4% of independent breach sequences, while the simulated cutoff of 2.16 restores the 5% level. On 2018&ndash;22 data the rule chose <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.85</mn></mrow><annotation encoding="application/x-tex">\lambda=0.85</annotation></semantics></math></span>, whose calibrated Christoffersen rejection share was 0.3% against 5.7% for <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.94</mn></mrow><annotation encoding="application/x-tex">\lambda=0.94</annotation></semantics></math></span>.</p>
+<p>Calibration matters at this sample size: in a check on 930-day sequences, close to the 941-day evaluation window, the <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>χ</mi><mn>1</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">\chi^2_1</annotation></semantics></math></span> cutoff of 3.84 rejects only 1.4% of independent breach sequences, while the simulated cutoff of 2.16 brings the rate back to about 5%. On 2018&ndash;22 data the rule chose <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.85</mn></mrow><annotation encoding="application/x-tex">\lambda=0.85</annotation></semantics></math></span>, whose calibrated Christoffersen rejection share was 0.3% against 5.7% for <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.94</mn></mrow><annotation encoding="application/x-tex">\lambda=0.94</annotation></semantics></math></span>.</p>
 <div class="tw"><table class="rtable">
   <tr><th>2023&ndash;26, 300 portfolios, 941 days, calibrated tests</th><th>Clustered (Christoffersen)</th><th>Clustered (DQ)</th><th>Kupiec rejected</th><th>Mean VaR</th><th>Quantile loss vs. <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.94</mn></mrow><annotation encoding="application/x-tex">\lambda=0.94</annotation></semantics></math></span></th></tr>
   <tr class="base"><td>FHS, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.94</mn></mrow><annotation encoding="application/x-tex">\lambda=0.94</annotation></semantics></math></span> (current)</td><td class="n">48%</td><td class="n">33%</td><td class="n">0%</td><td class="n">5.19%</td><td class="n">&ndash;</td></tr>
@@ -362,7 +443,7 @@ pre.code .f{color:#8250df}
   <li>One portfolio&rsquo;s Kupiec non-rejection is weak evidence: a 1.5% breach rate is caught only 24% of the time. The support for FHS&rsquo;s coverage rests more on its average breach rate across portfolios, 1.16% in 2023&ndash;26, than on the 0% rejection share.</li>
   <li>Coverage and clustering need separate tests: Kupiec is nearly blind to clustering and Christoffersen to a wrong breach rate. The four-lag DQ responds to both, but it detects less than a one-lag version of the same test (33% against 42% at <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>11</mn></msub><mo>=</mo><mn>0.10</mn></mrow><annotation encoding="application/x-tex">p_{11}=0.10</annotation></semantics></math></span>), so more lags did not bring more power.</li>
   <li>The clustering rejection shares observed for FHS, 48% for Christoffersen and 33% for DQ, are about what clustered processes with <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>11</mn></msub></mrow><annotation encoding="application/x-tex">p_{11}</annotation></semantics></math></span> between 0.10 and 0.20 produce. Shared crash days make the 300 portfolios dependent, so this gives a rough scale for the clustering, not an estimate of <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>11</mn></msub></mrow><annotation encoding="application/x-tex">p_{11}</annotation></semantics></math></span>.</li>
-  <li>In an analysis added afterwards, I reported intervals instead of pass or fail. Pooled over the 300 portfolios, the 2023&ndash;26 breach rate is 1.16% for FHS (95% date-block interval 0.71% to 1.67%), 1.14% for pooled LightGBM BASE and 1.21% for STRESS: all consistent with 1%, but too uncertain to tell 1% from 1.5%. At the 97.5% level breaches are 2.5 times as frequent, and Kupiec detects a 1.5-fold breach rate 61% of the time instead of about a third. There FHS breached on 2.52% of days (1.91% to 3.19%), Kupiec rejected no portfolio, and 32% still clustered.</li>
+  <li>In an analysis added afterwards, I reported intervals instead of pass or fail. Pooled over the 300 portfolios, the 2023&ndash;26 breach rate is 1.16% for FHS (95% date-block interval 0.71% to 1.67%), 1.14% for pooled LightGBM BASE and 1.21% for STRESS: all consistent with 1%, but too uncertain to tell 1% from 1.5%. At the 97.5% level breaches are 2.5 times as frequent, and Kupiec, with &chi;&sup2; cutoffs, detects a 1.5-fold breach rate 61% of the time, against 34% at the 99% level (24% with the Monte Carlo cutoffs in the table above). There FHS breached on 2.52% of days (1.91% to 3.19%), Kupiec rejected no portfolio, and 32% still clustered.</li>
 </ul>
 
 <h3>FHS, Student-t and the Gaussian model under loss</h3>
@@ -390,7 +471,7 @@ pre.code .f{color:#8250df}
 <ul>
   <li>Adding the three stress variables to LightGBM cut the share of portfolios with clustered breaches from 46% to 17%. But it raised quantile loss by 3.0% (95% interval +0.1% to +6.8%) and Kupiec rejections from 7% to 12%, so under the rule fixed before the run the stress information does not count as an improvement.</li>
   <li>In the linear model the stress variables left clustering unchanged at 57%, and the change in quantile loss, +1.2%, was within noise (95% interval &minus;0.6% to +3.0%).</li>
-  <li>The pre-specified secondary results agree. The drop in clustering holds for 3-, 6- and 13-stock portfolios (to 16&ndash;19%), the loss increase is similar in each (+2.7% to +3.3%), and a four-lag DQ test rejects 11% of STRESS portfolios against 25% for BASE and 31% for FHS.</li>
+  <li>The pre-specified secondary results agree. The drop in clustering holds for 3-, 6- and 13-stock portfolios (to 16&ndash;19%), the loss increase is similar in each (+2.7% to +3.3%), and a four-lag DQ test rejects 11% of STRESS portfolios against 25% for BASE and 31% for FHS (33% in the clustering study; the gap is Monte Carlo error from separate 999-draw nulls).</li>
   <li>In an exploratory follow-up, splitting the 2023&ndash;26 days into thirds by KOSPI 200 volatility does not support the simple story that the stress model trades calm-day accuracy for stress-day accuracy. Its extra loss comes mostly from the most stressed third (+5.1%, 95% interval &minus;0.5% to +10.0%), and its average VaR there is no higher than BASE&rsquo;s. What changes is the day after a breach: the chance of another breach falls from 8.7% to 4.5%. The stress features make VaR react faster right after a shock, but size it worse across stressed periods.</li>
   <li>The same split shows that FHS&rsquo;s 1.16% average breach rate hides a pattern by regime: 1.35% on the calmest third of days and 0.95% on the most stressed third.</li>
   <li>Without stress features, the pooled LightGBM had 4.9% lower quantile loss than FHS and a similar clustering share, but Kupiec rejected it for 7% of portfolios against none for FHS.</li>
@@ -409,12 +490,14 @@ pre.code .f{color:#8250df}
 <ul>
   <li>The hypothesis was not supported. On 2010&ndash;15 a breach without a market shock was again followed by about 2.7 times the usual breach rate, but the 95% interval reached down to 0.98, and three quarters of those repeat breaches followed just five dates. Breaches on market shock days were not clearly less persistent. Neither condition held.</li>
   <li>Market crashes came in chains only in some periods. After a breach on a market shock day, the next-day breach rate was 0.5% in 2018&ndash;22, 1.8% in 2010&ndash;15 and 13.2% in 2023&ndash;26. Much of the heavy clustering of 2023&ndash;26 came from such chains, the kind of persistence the hypothesis had ruled out.</li>
-  <li>Broken down by date after the results were in (an exploratory step), almost all of the 2023&ndash;26 clustering comes from two days on which a market drop was followed by a larger one: KOSPI 200 fell 4.1% and then 9.6% on 2 and 5 August 2024, and 8.3% and then 12.7% on 3 and 4 March 2026. Every portfolio breached on 5 August and 95% on 4 March. These two days account for 297 of the 299 breaches that followed a breach on a market shock day, and for 125 of the 145 portfolios flagged as clustered, which have no other back-to-back breaches. Without breaches on those two second days the clustered share would be about 4%, not 48%. In 2010&ndash;15 most such chains fall in August 2011. The COVID crash of 2020, which built up over weeks, produced few: 1.9% next-day breaches after a breach on a shock day.</li>
+  <li>Broken down by date after the results were in (an exploratory step), almost all of the 2023&ndash;26 clustering comes from two days on which a market drop was followed by a larger one: KOSPI 200 fell 4.1% and then 9.6% on 2 and 5 August 2024, and 8.3% and then 12.7% on 3 and 4 March 2026. Every portfolio breached on 5 August and 95% on 4 March. These two days account for 297 of the 299 breaches that followed a breach on a market shock day, and for 125 of the 145 portfolios flagged as clustered, which have no other back-to-back breaches. Without breaches on those two second days the clustered share would be 3.7%, not 48%. In 2010&ndash;15 most such chains fall in August 2011. The COVID crash of 2020, which built up over weeks, produced few: 1.9% next-day breaches after a breach on a shock day.</li>
   <li>Clustering depended on the period, but coverage did not. FHS breaches clustered in 7.7% of the new portfolios, against 7.0% in 2018&ndash;22 and 48% in 2023&ndash;26. Its breach rate was 1.16% (95% interval 0.89% to 1.44%), the same point value as in 2023&ndash;26 by coincidence, and Kupiec rejected 1 of 300 portfolios.</li>
   <li>The remedy did what it was built for. Raising the next day&rsquo;s VaR by 1.45 after a breach without a market shock cut the breach rate on those days from 2.9% to 0.55%. Quantile loss was unchanged (&minus;0.004%, 95% interval &minus;0.21% to +0.15%), Kupiec still rejected 1 of 300 portfolios, and the clustered share fell from 7.7% to 5.0%. The factor was fixed on 2018&ndash;22 and not tuned on these data.</li>
   <li>Earlier model results did not carry over. The LightGBM models fitted on 2018&ndash;22 were too cautious in 2010&ndash;15: breach rates of 0.71% (BASE) and 0.77% (STRESS), with Kupiec rejecting 30% and 21% of portfolios. STRESS clustered more than BASE (13.7% against 6.0%), with no difference in loss (&minus;0.3%, 95% interval &minus;2.1% to +1.3%). Faster volatility (<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0.85</mn></mrow><annotation encoding="application/x-tex">\lambda=0.85</annotation></semantics></math></span>) again cut clustering, to 1.0%, at 3.3% higher quantile loss (95% interval +0.8% to +5.4%).</li>
   <li>At the 97.5% level FHS breached on 2.65% of days (95% interval 2.17% to 3.16%), with no Kupiec rejections and 17% of portfolios clustered.</li>
-  <li>With a shock threshold of &minus;2.5 both conditions would have held, and with &minus;1.5 neither. Both thresholds were set in advance as sensitivity checks that do not change the verdict.</li>
+  <li>The other pre-specified secondary results did not support the hypothesis either. The next-day breach rate after a breach did not rise steadily with the market z-score: 1.76% for z &le; &minus;2 (2,615 breaches, 63 days), 3.03% for &minus;2 to &minus;1 (1,289 breaches, 159 days), 2.77% for &minus;1 to 0 (904 breaches, 511 days) and 2.90% above 0 (345 breaches, 753 days). The ratio R was 1.94 for 3-stock portfolios, 3.44 for 6 and 2.81 for 13, against the prediction that it would be largest for 3.</li>
+  <li>With a shock threshold of &minus;2.5 both conditions would have held (R 2.54, 95% interval 1.14 to 3.97; D +1.73 points, +0.10 to +3.33; 23 shock days), and with &minus;1.5 neither (R 2.07, 0.70 to 3.99; D &minus;0.26 points, &minus;3.23 to +2.65; 118 shock days). Both thresholds were set in advance as sensitivity checks that do not change the verdict.</li>
+  <li>Deviations from the protocol: none in the data rules, models, tests or decision rule. The notebook&rsquo;s protocol-commit field was left empty, so its audit log labels the run &ldquo;REAL_DATA, NOT PREREGISTERED&rdquo;; the protocol SHA-256 it recorded (a7e614cb&hellip;) matches the committed file.</li>
 </ul>
 
 <h3>Engineering decision</h3>

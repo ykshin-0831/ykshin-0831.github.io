@@ -20,7 +20,6 @@ Lab Researcher, Artificial Intelligence & Business Model Laboratory, Kyung Hee U
 I study whether the skill that financial risk models report holds up under fair evaluation. My work combines exact metric decompositions, simulation-based null distributions, preregistered and split-sample designs, and multiple-testing control, applied to crash early warning, portfolio risk engines, and textual analysis of corporate disclosures.
 
 - **Education:** B.A. in International Studies, Kyung Hee University (2026)
-- **Code:** developed and maintained in Google Drive (Colab) over the course of each project; the public repositories hold versions tidied and re-run from a clean state before publication.
 
 ## Research Interests
 
@@ -79,6 +78,6 @@ Tested whether a Fourier-based instability signal from one-minute Binance data w
 
 ## About This Repository
 
-This repository contains the source (HTML, CSS, and static assets) of my portfolio website, deployed with GitHub Pages. Research code is maintained in separate repositories where publicly available (see **Code** under About).
+This repository contains the source (HTML, CSS, and static assets) of my portfolio website, deployed with GitHub Pages. Research code is maintained in separate repositories where publicly available.
 
 <sub>Last updated: November 2026</sub>
