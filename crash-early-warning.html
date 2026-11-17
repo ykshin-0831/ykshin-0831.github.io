@@ -17,12 +17,15 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caladea:ital,wght@0,400;0,700;1,400;1,700&display=swap">
 <style>
 :root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Cambria,Caladea,Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 .tlink{color:inherit}
@@ -182,7 +185,7 @@ pre.code .f{color:#8250df}
 </div>
 <dl class="facts">
   <dt>Origin</dt><dd>Grew out of my team project <a href="btc-early-warning.html">Bitcoin Drawdown Early Warning</a>, where a signal I proposed turned out to react mostly to crashes already under way. The project tests one system; this paper asks the general question for any crash warning model, with new models, data and evaluation.</dd>
-  <dt>Data</dt><dd>Binance one-minute Bitcoin spot data: 1,750,612 evaluation minutes in the development period (January 2023 to April 2026, 83 crashes) and a one-shot holdout (2018 to 2020, 199 crashes). Daily data for 10 equity indices, 2005 to 2025.</dd>
+  <dt>Data</dt><dd>Binance one-minute Bitcoin spot data: 1,750,612 evaluation minutes in the development period (January 2023 to April 2026, 83 crashes) and a one-shot holdout (2018 to 2020, 199 crashes), its first use with this pipeline; the earlier Bitcoin project had checked its spectral rule on January 2018 to September 2020 once, with a different crash definition. Daily data for 10 equity indices, 2005 to 2025.</dd>
   <dt>Models</dt><dd>Logistic regression, a volatility threshold, VPIN and gradient boosting on 17 features, all frozen before evaluation</dd>
   <dt>Methods</dt><dd>Exact ROC-AUC decomposition, 7-day block bootstrap, Monte Carlo nulls, sensitivity bounds, preregistration (OSF)</dd>
 </dl>
@@ -242,6 +245,7 @@ pre.code .f{color:#8250df}
 
 <h3>Reproducibility</h3>
 <ul>
+  <li>Developed and maintained in Google Drive (Colab notebooks) from December 2025, then re-run from a clean state in October&ndash;November 2026 for the public replication package. The one-shot evaluations were the exception: each was run once, on the date in its lock file.</li>
   <li>54 Colab notebooks, frozen model files, specification files and stored result tables, with a SHA-256 manifest of every file.</li>
   <li>One-shot evaluations write a lock file with the specification hash and refuse to run a second time.</li>
   <li>Data-free check scripts reproduce the paper&rsquo;s values: 81 of 81 toy checks, 86 of 86 construction checks, 33 of 33 effect sizes and 32 of 32 table cells.</li>
@@ -263,8 +267,8 @@ pre.code .f{color:#8250df}
   <tr class="grp"><td colspan="2">Ten equity indices, daily 2005 to 2025, 10% crashes, preregistered</td></tr>
   <tr><td><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mtext>in</mtext></msub></mrow><annotation encoding="application/x-tex">\rho_{\text{in}}</annotation></semantics></math></span></td><td class="n">81% (95% interval 69&ndash;95%)</td></tr>
 </table></div>
-<p>Most measured skill is detection: only about 2 in 100 alerts are above-chance early warnings, and in seven published studies 17&ndash;88% of reconstructed &ldquo;pre-crash&rdquo; labels fall after onset.</p>
-<figure><img src="assets/crash_scores.jpg" alt="Median score percentile of four models around the onset of 83 Bitcoin crashes; scores jump after onset."><figcaption>Median score percentile of the four frozen models around the onset of the 83 development-period crashes.</figcaption></figure>
+<p>Most measured skill is detection: in the development period the 800 alerts warned of 22 crashes before onset against 6.7 expected by chance, about 2 extra crashes per 100 alerts, and in seven published studies 17&ndash;88% of reconstructed &ldquo;pre-crash&rdquo; labels fall after onset.</p>
+<figure><img src="assets/crash_scores.jpg" alt="Median score percentile of four models around the onset of 83 Bitcoin crashes; scores jump after onset."><figcaption>Median score percentile of the four frozen models around the onset of the 83 development-period crashes. M0: logistic regression on a volatility z-score and the taker-sell share; M1: the volatility z-score alone; M2: VPIN; M3: gradient boosting on 17 features.</figcaption></figure>
 
 <h2 id="ongoing">Ongoing</h2>
 <ul>
@@ -274,5 +278,6 @@ pre.code .f{color:#8250df}
 
 </main>
 <footer>&copy; 2026 Yeong Kyeong (YK) Shin. Last updated November 2026.</footer>
+<script data-goatcounter="https://ykshin.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

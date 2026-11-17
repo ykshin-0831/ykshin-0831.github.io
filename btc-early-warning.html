@@ -17,12 +17,15 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caladea:ital,wght@0,400;0,700;1,400;1,700&display=swap">
 <style>
 :root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Cambria,Caladea,Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 .tlink{color:inherit}
@@ -213,13 +216,13 @@ pre.code .f{color:#8250df}
 
 <h3>Evaluation</h3>
 <p>The target is a close at least 4% below the current price, sustained for 5 minutes, within 240 minutes, in a low-volatility regime. Positive minutes are merged into episodes, and each episode can be captured by at most one alarm, and only by an alarm whose own minute is positive. An equal-budget table compares, at the same number of alarms, a one-feature ranking, regularized logistic regression, XGBoost, and XGBoost without the spectral or cohesion features.</p>
-<p>After an external review I corrected four evaluation errors, each with a regression test: alarms credited in the gap between merged episodes, episodes from before the test period counted in the denominator, labels computed on truncated horizons, and minute gaps treated as consecutive data. The package runs 46 automated tests in CI.</p>
+<p>An external review found four errors in our evaluation, and I fixed each with a regression test: alarms credited in the gap between merged episodes, episodes from before the test period counted in the denominator, labels computed on truncated horizons, and minute gaps treated as consecutive data. The package runs its tests in CI.</p>
 
 <h3>Statistical tests</h3>
 <ul>
   <li><b>Detection:</b> McNemar test on the episodes caught by the frozen rule and by a volatility rule with the same alert count.</li>
   <li><b>Signal versus volatility:</b> IAAFT surrogates with a volatility-standardized null, comparing the largest bursts in one-day blocks with surrogates that keep volatility at scales from one to twelve hours.</li>
-  <li><b>Forecasting:</b> a pre-specified HAR-X comparison on untouched 2025&ndash;26 data, scored by QLIKE and the Clark&ndash;West test:</li>
+  <li><b>Forecasting:</b> a pre-specified HAR-X comparison on held-back 2025&ndash;26 data, not used to fit or tune the models, scored by QLIKE and the Clark&ndash;West test:</li>
 </ul>
 <div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mi>d</mi></msub><msub><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><mi>t</mi></msub><mo>+</mo><msub><mi>β</mi><mi>w</mi></msub><msubsup><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><mi>t</mi><mrow><mo stretchy="false">(</mo><mi>w</mi><mo stretchy="false">)</mo></mrow></msubsup><mo>+</mo><msub><mi>β</mi><mi>m</mi></msub><msubsup><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><mi>t</mi><mrow><mo stretchy="false">(</mo><mi>m</mi><mo stretchy="false">)</mo></mrow></msubsup><mo>+</mo><mi>γ</mi><mtext> </mtext><msub><mi>x</mi><mi>t</mi></msub><mo>+</mo><msub><mi>ε</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\mathrm{RV}_{t+1}=\beta_0+\beta_d\mathrm{RV}_t+\beta_w\mathrm{RV}^{(w)}_t+\beta_m\mathrm{RV}^{(m)}_t+\gamma\,x_t+\varepsilon_{t+1}</annotation></semantics></math></span></div>
 <div class="eq"><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mi mathvariant="normal">Q</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">I</mi><mi mathvariant="normal">K</mi><mi mathvariant="normal">E</mi></mrow><mo>=</mo><mfrac><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><msup><mover accent="true"><mi>σ</mi><mo>^</mo></mover><mn>2</mn></msup></mfrac><mo>−</mo><mi>ln</mi><mo>⁡</mo><mfrac><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">V</mi></mrow><msup><mover accent="true"><mi>σ</mi><mo>^</mo></mover><mn>2</mn></msup></mfrac><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\mathrm{QLIKE}=\frac{\mathrm{RV}}{\hat\sigma^{2}}-\ln\frac{\mathrm{RV}}{\hat\sigma^{2}}-1</annotation></semantics></math></span></div>
@@ -234,7 +237,7 @@ pre.code .f{color:#8250df}
 </table></div>
 <ul>
   <li>The 2.25 million minutes per coin are the engineering scale. The learner&rsquo;s statistical sample is the rule&rsquo;s alarms: 1,373 rows, of which 13 are crashes (11 in the training years, 2 in the test years). XGBoost ranked the two test-year crashes 75th and 460th of 592.</li>
-  <li>The team&rsquo;s original presentation reported 3 of 5 test episodes caught (60% recall). The corrected re-run did not reproduce it. Even taken at face value, 3 of 5 has a 95% interval of 15% to 95%, and narrowing it to &plusmn;10 points would take about 100 episodes, roughly 40 years at this rate.</li>
+  <li>Our original presentation reported 3 of 5 test episodes caught (60% recall); after the evaluation was corrected, the re-run did not reproduce it. Even taken at face value, 3 of 5 has a 95% interval of 15% to 95%, and narrowing it to &plusmn;10 points would take about 100 episodes, roughly 40 years at this rate.</li>
   <li>Over 2020&ndash;24 the rule&rsquo;s alarms hit crashes more often than their own timing explains (13 positive alarms against 7.0 expected when the alarm sequence is shifted in time, p = 0.018), but the rule&rsquo;s thresholds were set on those same years.</li>
 </ul>
 
@@ -290,5 +293,6 @@ pre.code .f{color:#8250df}
 
 </main>
 <footer>&copy; 2026 Yeong Kyeong (YK) Shin. Last updated November 2026.</footer>
+<script data-goatcounter="https://ykshin.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

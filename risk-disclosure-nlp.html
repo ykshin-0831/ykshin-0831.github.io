@@ -17,12 +17,15 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caladea:ital,wght@0,400;0,700;1,400;1,700&display=swap">
 <style>
 :root{--ink:#212529;--muted:#5f6670;--accent:#102646;--accent-soft:#e8edf5;--line:#e6e8eb;--bg:#fff}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.6}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Cambria,Caladea,Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 .tlink{color:inherit}
@@ -188,7 +191,7 @@ pre.code .f{color:#8250df}
 <h2 id="design">Design</h2>
 <h3>Pipeline</h3>
 <div class="flow" style="--cols:3"><div class="node"><b><span class="step">1</span>Collect</b><span>32,314 reports via OpenDART, delisted firms included</span></div><div class="node"><b><span class="step">2</span>Filter</b><span>KSS, OKT, 120-term lexicon: 1.08M risk sentences</span></div><div class="node"><b><span class="step">3</span>Repetition</b><span>exact and 4-gram Jaccard vs. firm&rsquo;s t&minus;1</span></div><div class="node"><b><span class="step">4</span>Classify</b><span>KoSimCSE, 9 seed-anchored categories</span></div><div class="node"><b><span class="step">5</span>Measure</b><span>entropy, novelty, RDQI per firm-year</span></div><div class="node"><b><span class="step">6</span>Test</b><span>firm-year panel, pre-specified A/B tests, BH</span></div></div>
-<p>The filter runs as a resumable multiprocess job with per-worker SQLite outputs (about 9 hours for 32,314 reports on a laptop). A refactored library has parity tests against the original code paths, and the repository runs 52 automated tests in CI.</p>
+<p>The filter runs as a resumable multiprocess job with per-worker SQLite outputs (about 9 hours for 32,314 reports on a laptop). A refactored library has parity tests against the original code paths, and the repository runs its tests in CI.</p>
 
 <h3>Measures</h3>
 <h4>Repetition</h4>
@@ -234,7 +237,7 @@ pre.code .f{color:#8250df}
 <p>Firms are hashed into halves A and B. Each pre-specified test runs on A, is re-run on B only when <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><msub><mi>t</mi><mi>A</mi></msub><mi mathvariant="normal">∣</mi><mo>≥</mo><mn>1.96</mn></mrow><annotation encoding="application/x-tex">|t_A|\ge 1.96</annotation></semantics></math></span>, and counts as confirmed only when the same term repeats sign and significance on B. Benjamini&ndash;Hochberg q-values are reported for the pre-specified family and for all tests. Filing-day abnormal volume is the log ratio of mean event-window volume to mean estimation-window volume, with a [+1,+2] window because DART filings carry a date but no time.</p>
 
 <h2 id="findings">Findings</h2>
-<p>The results are not posted while the paper is under external peer review. They will be added here once the review is complete.</p>
+<p>The results are not posted while the paper is under double-anonymized peer review. They will be added here once the review is complete.</p>
 
 <h2 id="ongoing">Ongoing</h2>
 <ul>
@@ -244,5 +247,6 @@ pre.code .f{color:#8250df}
 
 </main>
 <footer>&copy; 2026 Yeong Kyeong (YK) Shin. Last updated November 2026.</footer>
+<script data-goatcounter="https://ykshin.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
